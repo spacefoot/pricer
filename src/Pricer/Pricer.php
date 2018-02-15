@@ -100,6 +100,14 @@ class Pricer
         return $this;
     }
 
+    /**
+     * Gap between best competitve price and pricer output
+     * @return float
+     */
+    public function getBestCompetitorGap() : float
+    {
+        return $this->bestCompetitorGap;
+    }
 
     /**
      * Set shipping object used to compute shipping cost
@@ -260,6 +268,7 @@ class Pricer
 
     /**
      * Get computed shipping cost
+     * @throws \Exception
      * @param float $sellingPrice   A selling price with all fees included except shipping
      */
     public function getShippingPrice(float $sellingPrice) : float
@@ -290,7 +299,6 @@ class Pricer
         return 0.0;
     }
 
-
     /**
      * Can use competitor if competitor price - 0.01 > min price or if competitor price >= selling price x 0.9
      * @param Competitor $competitor
@@ -304,7 +312,6 @@ class Pricer
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
-
 
     /**
      * Lower price to target price if necessary, check price validity
@@ -332,7 +339,6 @@ class Pricer
             );
         }
     }
-
 
     /**
      * Compute a product price

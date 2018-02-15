@@ -307,4 +307,16 @@ class PricerTest extends TestCase
         $this->assertLessThan($price16->sellingPrice, $price15->sellingPrice);
         $this->assertLessThan($price16s->sellingPrice, $price15s->sellingPrice);
     }
+
+    public function test3Competitors()
+    {
+        $pricer = $this->getNoshippingPricer()
+        ->setAlignMarkup(10)
+        ->setTargetMarkup(20);
+
+        $this->assertPrice(11.11, $pricer->getProductPrice(15.00, 10.00, $this->getCompetitor(11.00)));
+        $this->assertPrice(11.99, $pricer->getProductPrice(15.00, 10.00, $this->getCompetitor(12.00)));
+        $this->assertPrice(12.50, $pricer->getProductPrice(15.00, 10.00, $this->getCompetitor(13.00)));
+        $this->assertPrice(12.50, $pricer->getProductPrice(15.00, 10.00));
+    }
 }

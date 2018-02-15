@@ -17,9 +17,17 @@ Target markup: This is the markup on selling price in percentage used to compute
 
 
 ```php
-$pricer->setAlignMarkup(10);
+$pricer->setAlignMarkup(20);
 $pricer->setTargetMarkup(10);
 ```
+
+| Purchase price | Competitive price | Pricer output |
+|---------------:|------------------:|--------------:|
+|          10.00 |             11.00 |         11.11 |
+|          10.00 |             12.00 |         11.99 |
+|          10.00 |             13.00 |         12.50 |
+|          10.00 |              NULL |         12.50 |
+
 
 ### Drop rate when purchase price is unknown
 
@@ -36,6 +44,16 @@ $pricer->setDropRate(10);
 |      10.00 |             10.83 |         10.82 |
 |      10.00 |              9.00 |          9.00 |
 |      10.00 |              8.91 |          9.00 |
+
+
+### Alignement to a competitor
+
+When a competitive price is within allowed price update range, the default behaviour is the output a price lower than the best competitive price by 0.01 this can be modified to increase the price drop:
+
+
+```php
+$pricer->setBestCompetitorGap(0.03);
+```
 
 
 ## Shipping price/Shipping cost
