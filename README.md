@@ -38,6 +38,7 @@ Pricer output to use  as a discounted price
 
 Contain one of the following possible type
 
+| Constant                 | type value                     |
 |--------------------------|--------------------------------|
 | ProductPrice::BASE       | Unmodified base price          |
 | ProductPrice::COMPETITOR | Aligned to competitor          |
