@@ -16,13 +16,15 @@ $pricer = new Pricer();
 $basePrice = 14.80;
 $purchasePrice = 10.00;
 
-var_dump($pricer->getProductPrice($basePrice, $purchasePrice));
+$pricer->getProductPrice($basePrice, $purchasePrice);
+// return a ProductPrice object
 
 // with a competitor
 $competitor = new Competitor();
 $competitor->sellingPrice = 10.90;
 $competitor->name = 'Seller name';
-var_dump($pricer->getProductPrice($basePrice, $purchasePrice, $competitor));
+$pricer->getProductPrice($basePrice, $purchasePrice, $competitor);
+// return a ProductPrice object
 
 ```
 
