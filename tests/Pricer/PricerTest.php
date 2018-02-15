@@ -1,8 +1,15 @@
 <?php
 namespace Pricer;
 
-class PricerTest extends AbstractTestCase
+use PHPUnit\Framework\TestCase;
+
+class PricerTest extends TestCase
 {
+    protected function assertPrice(float $expected, ProductPrice $current)
+    {
+        $this->assertEquals($expected, $current->sellingPrice, 'Price type = '.$current->type, 0.01);
+    }
+
     protected function getNoshippingPricer() : Pricer
     {
         $pricer = new Pricer();
@@ -19,7 +26,7 @@ class PricerTest extends AbstractTestCase
     {
         $pricer = new Pricer();
 
-        $pricer->setFeeSellingMarkup(15)
+        $pricer->setFeeSellingRate(15)
             ->setShippingCost(5.99)
             ->setShippingScale(
                 [
@@ -281,5 +288,23 @@ class PricerTest extends AbstractTestCase
 
         $this->assertInstanceOf('Pricer\UnexpectedPriceException', $price->error);
         $this->assertEquals(ProductPrice::BASE, $price->type);
+    }
+
+    public function testfeesUpdate()
+    {
+        $pricer15 = $this->getFeesPricer()->setFeeSellingRate(15);
+        $pricer16 = $this->getFeesPricer()->setFeeSellingRate(16);
+
+        $price15 = $pricer15->setShippingFee(false)->getProductPrice(14.00, 6.00);
+        $price15s = $pricer15->setShippingFee(true)->getProductPrice(14.00, 6.00);
+
+        $price16 = $pricer16->setShippingFee(false)->getProductPrice(14.00, 6.00);
+        $price16s = $pricer16->setShippingFee(true)->getProductPrice(14.00, 6.00);
+
+        $this->assertLessThan($price15s->sellingPrice, $price15->sellingPrice);
+        $this->assertLessThan($price16s->sellingPrice, $price16->sellingPrice);
+
+        $this->assertLessThan($price16->sellingPrice, $price15->sellingPrice);
+        $this->assertLessThan($price16s->sellingPrice, $price15s->sellingPrice);
     }
 }

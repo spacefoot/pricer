@@ -76,7 +76,7 @@ class Pricer
      * @param float $fee       Fee percentage
      * @return self
      */
-    public function setFeeSellingMarkup(int $fee) : self
+    public function setFeeSellingRate(int $fee) : self
     {
         $this->feeFactor = $this->getMarkupFactor($fee);
 
@@ -319,7 +319,6 @@ class Pricer
             if ($this->decreaseToTarget) {
                 // If the price remain higher than target price, normalize
                 $price->setSellingPriceDown($targetPrice, ProductPrice::TARGET);
-
             } elseif ($price->sellingPrice > $targetPrice) {
                 throw new UnexpectedPriceException(
                     sprintf('Current selling price %f higher than target price %f', $price->sellingPrice, $targetPrice)
