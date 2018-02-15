@@ -7,6 +7,12 @@ namespace Pricer;
 class Pricer
 {
     /**
+     * Real cost of shipping for the seller
+     * @var float
+     */
+    protected $shippingCost = 0.0;
+
+    /**
      * Shipping scale used to ccompute shipping cost
      * @var array
      */
@@ -19,12 +25,6 @@ class Pricer
     protected $shippingFee = false;
 
     /**
-     * Set the lowest price possible if alignement to a competitor price is not possible
-     * @var string
-     */
-    protected $decreaseIfLowCompetitor = true;
-
-    /**
      * Always decrease to target price if price is higher than target selling markup
      * @var string
      */
@@ -32,9 +32,10 @@ class Pricer
 
     /**
      * factor to obtain the minimal selling price from purchase price
+     * if null, disable alignement to competitor price
      * @var float
      */
-    protected $minMarkupFactor = 1;
+    protected $alignMarkupFactor = 1;
 
     /**
      * factor to obtain the desired selling price from purchase price
@@ -71,7 +72,6 @@ class Pricer
         return 100/(100-$rate);
     }
 
-
     /**
      * @param float $fee       Fee percentage
      * @return self
@@ -105,18 +105,11 @@ class Pricer
      * Set shipping object used to compute shipping cost
      * First value is the upper limit to compare with total selling price
      * Second value is the amount of shipping
-     * [
-     *   [20,    0.8985],
-     *   [70,    3.4485],
-     *   [null,  5.9900]
-     * ]
      * @param array $shippingScale
      * @return self
      */
     public function setShippingScale(array $shippingScale) : self
     {
-
-
         $this->shippingScale = $shippingScale;
 
         return $this;
@@ -130,21 +123,6 @@ class Pricer
     public function setShippingFee(bool $shippingFee) : self
     {
         $this->shippingFee = $shippingFee;
-
-        return $this;
-    }
-
-    /**
-     * Set the lowest price possible if alignement to a competitor price is not possible, Enable/Disable
-     *
-     * @todo replace setAlignMarkup(null)
-     *
-     * @param boolean $decrease
-     * @return self
-     */
-    public function setDecreaseIfLowCompetitor(bool $decrease) : self
-    {
-        $this->decreaseIfLowCompetitor = $decrease;
 
         return $this;
     }
@@ -173,6 +151,10 @@ class Pricer
         return $this;
     }
 
+    /**
+     * Get target factor used to compute target price from the purchase price
+     * @return float
+     */
     public function getTargetMarkupFactor() : float
     {
         return $this->targetMarkupFactor;
@@ -180,22 +162,28 @@ class Pricer
 
     /**
      * Set minimal selling markup if competitors
-     *
-     * @todo rename setAlignMarkup
-     *
      * @param int $minMargin margin rate %
      * @return self
      */
-    public function setMinSellingMarkup(int $minMargin) : self
+    public function setAlignMarkup(int $minMargin = null) : self
     {
-        $this->minMarkupFactor = $this->getMarkupFactor($minMargin);
+        if (!isset($minMargin)) {
+            $this->alignMarkupFactor = null;
+
+            return $this;
+        }
+        $this->alignMarkupFactor = $this->getMarkupFactor($minMargin);
 
         return $this;
     }
 
-    public function getMinMarkupFactor() : float
+    /**
+     * Get minimal align factor used to compute minimal price from purchase price
+     * @return float
+     */
+    public function getAlignMarkupFactor() : float
     {
-        return $this->minMarkupFactor;
+        return $this->alignMarkupFactor;
     }
 
     /**
@@ -211,14 +199,27 @@ class Pricer
     }
 
     /**
+     * Allowed drop factor if no purchase price
+     * @return float
+     */
+    public function getDropFactor() : float
+    {
+        return $this->dropRateFactor;
+    }
+
+    /**
      * Get minimal selling price
      * @param float $purchasePrice
      * @return float
      */
     public function getMinPrice(float $purchasePrice) : float
     {
-        $minPrice = $purchasePrice * $this->minMarkupFactor * $this->feeFactor;
-        $minPrice += $this->getShippingCost($minPrice);
+        if (!isset($this->alignMarkupFactor)) {
+            return $this->getTargetPrice($purchasePrice);
+        }
+
+        $minPrice = $purchasePrice * $this->alignMarkupFactor * $this->feeFactor;
+        $minPrice += $this->getShippingPrice($minPrice);
 
         return round($minPrice, 2);
     }
@@ -231,28 +232,46 @@ class Pricer
     public function getTargetPrice(float $purchasePrice) : float
     {
         $targetPrice = $purchasePrice * $this->targetMarkupFactor * $this->feeFactor;
-        $targetPrice += $this->getShippingCost($targetPrice);
+        $targetPrice += $this->getShippingPrice($targetPrice);
 
         return round($targetPrice, 2);
     }
 
+    /**
+     * Set the real shipping cost paid by seller
+     * @param float $shippingCost
+     * @return self
+     */
+    public function setShippingCost(float $shippingCost) : self
+    {
+        $this->shippingCost = $shippingCost;
+
+        return $this;
+    }
+
+    /**
+     * Get the real shipping cost paid by seller
+     * @return float
+     */
+    public function getShippingCost() : float
+    {
+        return $this->shippingCost;
+    }
 
     /**
      * Get computed shipping cost
      * @param float $sellingPrice   A selling price with all fees included except shipping
      */
-    public function getShippingCost(float $sellingPrice) : float
+    public function getShippingPrice(float $sellingPrice) : float
     {
-        if (!isset($this->shippingScale[0])) {
-            return 0.0;
+        if (count($this->shippingScale) > 0 && 0 === (int) round(100 * $this->getShippingCost())) {
+            throw new \Exception('Shipping cost is required with a shipping scale');
         }
 
-        //TODO add method for base shipping cost
-        $baseShippingCost = $this->shippingScale[0][1];
-
         foreach ($this->shippingScale as $scale) {
-
-            $shipping = (($baseShippingCost * $this->getFeeFactor()) - $scale[1]) / $this->getFeeFactor();
+            $shipping =
+                (($this->getShippingCost() * $this->getFeeFactor()) - $scale[1])
+                / $this->getFeeFactor();
 
             if ($this->shippingFee) {
                 $shipping *= $this->getFeeFactor();
@@ -281,7 +300,7 @@ class Pricer
      */
     protected function canUseCompetitor(Competitor $competitor, float $minPrice) : bool
     {
-        $estimatedCents = (int) round(100 *($competitor->sellingPrice - $this->bestCompetitorGap));
+        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->bestCompetitorGap));
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
@@ -340,7 +359,7 @@ class Pricer
         }
 
 
-        if (isset($competitor)) {
+        if (isset($competitor) && isset($this->alignMarkupFactor)) {
             $price->competitor = $competitor;
 
             if ($this->canUseCompetitor($competitor, $minPrice)) {
@@ -348,7 +367,7 @@ class Pricer
                     round($competitor->sellingPrice - $this->bestCompetitorGap, 2),
                     ProductPrice::COMPETITOR
                 );
-            } elseif ($this->decreaseIfLowCompetitor) {
+            } else {
                 $price->setSellingPriceDown(
                     round($minPrice, 2),
                     isset($purchasePrice) ? ProductPrice::MIN : ProductPrice::MIN_RATED

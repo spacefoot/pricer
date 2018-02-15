@@ -8,7 +8,7 @@ class PricerTest extends AbstractTestCase
         $pricer = new Pricer();
 
         $pricer
-            ->setMinSellingMarkup(18)
+            ->setAlignMarkup(18)
             ->setTargetSellingMarkup(30)
             ->setDropRate(10);
 
@@ -20,6 +20,7 @@ class PricerTest extends AbstractTestCase
         $pricer = new Pricer();
 
         $pricer->setFeeSellingMarkup(15)
+            ->setShippingCost(5.99)
             ->setShippingScale(
                 [
                     [20,    5.99],
@@ -28,7 +29,7 @@ class PricerTest extends AbstractTestCase
                 ]
             )
             ->setShippingFee(true)
-            ->setMinSellingMarkup(18)
+            ->setAlignMarkup(18)
             ->setTargetSellingMarkup(30)
             ->setDropRate(10);
 
@@ -188,10 +189,10 @@ class PricerTest extends AbstractTestCase
 
 
 
-    public function testDecreaseIfLowCompetitorDisabled()
+    public function testAlignDisabled()
     {
         $pricer = $this->getFeesPricer()
-            ->setDecreaseIfLowCompetitor(false)
+            ->setAlignMarkup(null)
             ->setDecreaseToTarget(true);
 
         $competitor = $this->getCompetitor(14.00);
@@ -210,7 +211,7 @@ class PricerTest extends AbstractTestCase
     public function testDecreaseToTargetDisabled()
     {
         $pricer = $this->getFeesPricer()
-            ->setDecreaseIfLowCompetitor(false)
+            ->setAlignMarkup(null)
             ->setDecreaseToTarget(false);
 
         $price = $pricer->getProductPrice(35.00, 6.00);
@@ -226,7 +227,7 @@ class PricerTest extends AbstractTestCase
     public function testForceMarkupOnPurchasePrice()
     {
         $pricer = $this->getNoshippingPricer()
-            ->setMinSellingMarkup(10)
+            ->setAlignMarkup(10)
             ->setTargetSellingMarkup(10);
         $price = $pricer->getProductPrice(35.00, 9.00);
 
@@ -242,7 +243,7 @@ class PricerTest extends AbstractTestCase
     public function testForceMarkupWithNoPurchasePrice()
     {
         $pricer = $this->getNoshippingPricer()
-            ->setMinSellingMarkup(10)
+            ->setAlignMarkup(10)
             ->setTargetSellingMarkup(10);
         $price = $pricer->getProductPrice(35.00);
 
@@ -254,7 +255,7 @@ class PricerTest extends AbstractTestCase
     public function testForceMarkupWithFees()
     {
         $pricer = $this->getFeesPricer()
-            ->setMinSellingMarkup(10)
+            ->setAlignMarkup(10)
             ->setTargetSellingMarkup(10);
         $price = $pricer->getProductPrice(11.00, 7.00);
 
@@ -274,7 +275,7 @@ class PricerTest extends AbstractTestCase
     public function testShippingCostGreaterThanBasePrice()
     {
         $pricer = $this->getFeesPricer()
-            ->setMinSellingMarkup(10)
+            ->setAlignMarkup(10)
             ->setTargetSellingMarkup(10);
         $price = $pricer->getProductPrice(6.99, 7.00);
 
