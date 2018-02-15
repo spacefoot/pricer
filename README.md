@@ -1,19 +1,62 @@
 # pricer
 
-The pricer is a tool used to compute a discounted price according to differents parameters.
+The pricer is a tool used to compute a discounted price according to different parameters.
 
 ## General purpose
 
-This sofware is designed to compute a beter price on products using defined markups and competitors price on the same product. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
+This software library is designed to compute a better price on products using defined markups and competitors price on the same product. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
+
+Example with default options:
+
+```php
+user Pricer;
+
+$pricer = new Pricer();
+
+$basePrice = 14.80;
+$purchasePrice = 10.00;
+
+var_dump($pricer->getProductPrice($basePrice, $purchasePrice));
+
+// with a competitor
+$competitor = new Competitor();
+$competitor->sellingPrice = 10.90;
+$competitor->name = 'Seller name';
+var_dump($pricer->getProductPrice($basePrice, $purchasePrice, $competitor));
+
+```
+
+## Output price
+
+The pricer output a `ProductPrice` object with properties:
+
+### sellingPrice
+
+Pricer output to use  as a discounted price
+
+### type
+
+Contain one of the following possible type
+
+|--------------------------|--------------------------------|
+| ProductPrice::BASE       | Unmodified base price          |
+| ProductPrice::COMPETITOR | Aligned to competitor          |
+| ProductPrice::MIN        | Minimal selling markup         |
+| ProductPrice::TARGET     | Target selling markup          |
+| ProductPrice::MIN_RATED  | Max price drop from base price |
+
+### error
+
+Contain an exception if sellingPrice is higher than target price or lower than align price 
 
 
 ## price calculation
 
 ### Markups for price computed from purchase price
 
-Align markup: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price
+__Align markup__: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price
 
-Target markup: This is the markup on selling price in percentage used to compute the price when there is no competitor
+__Target markup__: This is the markup on selling price in percentage used to compute the price when there is no competitor
 
 
 ```php
@@ -55,6 +98,21 @@ When a competitive price is within allowed price update range, the default behav
 $pricer->setBestCompetitorGap(0.03);
 ```
 
+### Other options
+
+Disable competitor aligment:
+
+```php
+$pricer->setAlignMarkup(null);
+```
+
+Disable price decrease to target price, in this case only an error message remain in the error property of the price object to indicate a base price higher than expected:
+
+
+```php
+$pricer->setDecreaseToTarget(false);
+```
+
 
 ## Shipping price/Shipping cost
 
@@ -72,7 +130,7 @@ the different between shipping cost and shipping price is accounted in the price
 
 ### Set a shipping scale
 
-A shipping scale is an array with a higher limit and a shipping amout. this will be used to compute the shipping price
+A shipping scale is an array with a higher limit and a shipping amount. this will be used to compute the shipping price
 
 For the last shipping scale entry, the higher limit is set to NULL. The shipping cost is required if the shipping scale contain rows.
 
@@ -87,9 +145,19 @@ $pricer->setShippingScale(
 );
 ```
 
+In this example, if pricer output is greater than 20 but lower than 70, the shipping price will be 2.99
+
 ## Fees
 
 The same fee rate is used to compute fees on price and fees on shipping cost
+
+Apply fees on pricer output with a fee rate on percentage:
+
+```php
+$pricer->setFeeRate(10);
+
+```
+
 
 To disable fees on shipping cost, the setShippingFee method can be used:
 
