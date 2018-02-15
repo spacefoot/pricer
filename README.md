@@ -9,7 +9,7 @@ This software library is designed to compute a better price on products using de
 Example with default options:
 
 ```php
-user Pricer;
+use Pricer\Pricer;
 
 $pricer = new Pricer();
 
