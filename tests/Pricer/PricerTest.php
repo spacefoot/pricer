@@ -16,7 +16,7 @@ class PricerTest extends TestCase
 
         $pricer
             ->setAlignMarkup(18)
-            ->setTargetSellingMarkup(30)
+            ->setTargetMarkup(30)
             ->setDropRate(10);
 
         return $pricer;
@@ -37,7 +37,7 @@ class PricerTest extends TestCase
             )
             ->setShippingFee(true)
             ->setAlignMarkup(18)
-            ->setTargetSellingMarkup(30)
+            ->setTargetMarkup(30)
             ->setDropRate(10);
 
         return $pricer;
@@ -235,7 +235,7 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getNoshippingPricer()
             ->setAlignMarkup(10)
-            ->setTargetSellingMarkup(10);
+            ->setTargetMarkup(10);
         $price = $pricer->getProductPrice(35.00, 9.00);
 
         $this->assertPrice(10.00, $price);
@@ -251,7 +251,7 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getNoshippingPricer()
             ->setAlignMarkup(10)
-            ->setTargetSellingMarkup(10);
+            ->setTargetMarkup(10);
         $price = $pricer->getProductPrice(35.00);
 
         $this->assertPrice(35.00, $price);
@@ -263,7 +263,7 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(10)
-            ->setTargetSellingMarkup(10);
+            ->setTargetMarkup(10);
         $price = $pricer->getProductPrice(11.00, 7.00);
 
         $this->assertPrice(10.21, $price);
@@ -283,7 +283,7 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(10)
-            ->setTargetSellingMarkup(10);
+            ->setTargetMarkup(10);
         $price = $pricer->getProductPrice(6.99, 7.00);
 
         $this->assertInstanceOf('Pricer\UnexpectedPriceException', $price->error);

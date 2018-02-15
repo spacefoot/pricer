@@ -144,7 +144,7 @@ class Pricer
      * @param int $targetMargin Selling markup in percentage
      * @return self
      */
-    public function setTargetSellingMarkup(int $targetMargin) : self
+    public function setTargetMarkup(int $targetMargin) : self
     {
         $this->targetMarkupFactor = $this->getMarkupFactor($targetMargin);
 
