@@ -116,7 +116,7 @@ class Pricer
      * Get fee factor
      * @return float
      */
-    public function getFeeFactor() : float
+    protected function getFeeFactor() : float
     {
         return $this->feeFactor;
     }
@@ -233,7 +233,7 @@ class Pricer
      * Get target factor used to compute target price from the purchase price
      * @return float
      */
-    public function getTargetMarkupFactor() : float
+    protected function getTargetMarkupFactor() : float
     {
         return $this->targetMarkupFactor;
     }
@@ -269,7 +269,7 @@ class Pricer
      * Get minimal align factor used to compute minimal price from purchase price
      * @return float
      */
-    public function getAlignMarkupFactor() : float
+    protected function getAlignMarkupFactor() : float
     {
         return $this->alignMarkupFactor;
     }
@@ -300,7 +300,7 @@ class Pricer
      * Allowed drop factor if no purchase price
      * @return float
      */
-    public function getDropFactor() : float
+    protected function getDropFactor() : float
     {
         return $this->dropRateFactor;
     }
@@ -310,7 +310,7 @@ class Pricer
      * @param float $purchasePrice
      * @return float
      */
-    public function getMinPrice(float $purchasePrice) : float
+    protected function getMinPrice(float $purchasePrice) : float
     {
         if (!isset($this->alignMarkupFactor)) {
             return $this->getTargetPrice($purchasePrice);
@@ -327,7 +327,7 @@ class Pricer
      * @param float $purchasePrice
      * @return float
      */
-    public function getTargetPrice(float $purchasePrice) : float
+    protected function getTargetPrice(float $purchasePrice) : float
     {
         $targetPrice = $purchasePrice * $this->targetMarkupFactor * $this->feeFactor;
         $targetPrice += $this->getShippingPrice($targetPrice);
@@ -361,7 +361,7 @@ class Pricer
      * @throws \Exception
      * @param float $sellingPrice   A selling price with all fees included except shipping
      */
-    public function getShippingPrice(float $sellingPrice) : float
+    protected function getShippingPrice(float $sellingPrice) : float
     {
         if (count($this->shippingScale) > 0 && 0 === (int) round(100 * $this->getShippingCost())) {
             throw new \Exception('Shipping cost is required with a shipping scale');
