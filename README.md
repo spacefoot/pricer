@@ -52,7 +52,7 @@ Contain one of the following possible type
 
 ### error
 
-Contain an exception if sellingPrice is higher than target price or lower than align price 
+Contain an exception if `sellingPrice` is higher than target price or lower than align price 
 
 
 ## price calculation
@@ -141,7 +141,7 @@ the different between shipping cost and shipping price is accounted in the price
 
 ### Set a shipping scale
 
-A shipping scale is an array with a higher limit and a shipping amount. this will be used to compute the shipping price
+A shipping scale is an array with a higher limit and a shipping amount. The shipping scale contain the possibles shipping price that a customer can pay.
 
 For the last shipping scale entry, the higher limit is set to NULL. The shipping cost is required if the shipping scale contain rows.
 
@@ -160,7 +160,9 @@ In this example, if pricer output is greater than 20 but lower than 70, the ship
 
 ## Fees
 
-The same fee rate is used to compute fees on price and fees on shipping cost, on a default pricer instance, there is no fees
+It is possible to add a percentage charge that will be taken into account in the price calculation.
+
+The same fee rate is used to compute fees on price and fees on shipping cost, on a default pricer instance, there is no fees.
 
 Apply fees on pricer output with a fee rate on percentage:
 
