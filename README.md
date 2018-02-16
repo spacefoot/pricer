@@ -165,6 +165,6 @@ $pricer->setFeeRate(10);
 To disable fees on shipping cost, the setShippingFee method can be used:
 
 ```php
-$pricer->setShippingFee(false);
+$pricer->setFeeOnShipping(false);
 
 ```

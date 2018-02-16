@@ -35,7 +35,7 @@ class PricerTest extends TestCase
                     [null,  0]
                 ]
             )
-            ->setShippingFee(true)
+            ->setFeeOnShipping(true)
             ->setAlignMarkup(18)
             ->setTargetMarkup(30)
             ->setDropRate(10);
@@ -143,7 +143,7 @@ class PricerTest extends TestCase
         // 18*1.428571429*1.176470588 + 3.4485
 
         $pricer = $this->getFeesPricer();
-        $pricer->setShippingFee(false);
+        $pricer->setFeeOnShipping(false);
         $price = $pricer->getProductPrice(35.00, 18.00);
         $this->assertEquals(ProductPrice::TARGET, $price->type);
         $this->assertPrice(33.70, $price);
@@ -295,11 +295,11 @@ class PricerTest extends TestCase
         $pricer15 = $this->getFeesPricer()->setFeeSellingRate(15);
         $pricer16 = $this->getFeesPricer()->setFeeSellingRate(16);
 
-        $price15 = $pricer15->setShippingFee(false)->getProductPrice(14.00, 6.00);
-        $price15s = $pricer15->setShippingFee(true)->getProductPrice(14.00, 6.00);
+        $price15 = $pricer15->setFeeOnShipping(false)->getProductPrice(14.00, 6.00);
+        $price15s = $pricer15->setFeeOnShipping(true)->getProductPrice(14.00, 6.00);
 
-        $price16 = $pricer16->setShippingFee(false)->getProductPrice(14.00, 6.00);
-        $price16s = $pricer16->setShippingFee(true)->getProductPrice(14.00, 6.00);
+        $price16 = $pricer16->setFeeOnShipping(false)->getProductPrice(14.00, 6.00);
+        $price16s = $pricer16->setFeeOnShipping(true)->getProductPrice(14.00, 6.00);
 
         $this->assertLessThan($price15s->sellingPrice, $price15->sellingPrice);
         $this->assertLessThan($price16s->sellingPrice, $price16->sellingPrice);

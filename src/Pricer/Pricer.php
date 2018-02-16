@@ -22,7 +22,7 @@ class Pricer
      * Use fee on shipping cost
      * @var bool
      */
-    protected $shippingFee = false;
+    protected $feeOnShipping = false;
 
     /**
      * Always decrease to target price if price is higher than target selling markup
@@ -128,9 +128,9 @@ class Pricer
      * @param boolean $shippingFee
      * @return self
      */
-    public function setShippingFee(bool $shippingFee) : self
+    public function setFeeOnShipping(bool $shippingFee) : self
     {
-        $this->shippingFee = $shippingFee;
+        $this->feeOnShipping = $shippingFee;
 
         return $this;
     }
@@ -282,7 +282,7 @@ class Pricer
                 (($this->getShippingCost() * $this->getFeeFactor()) - $scale[1])
                 / $this->getFeeFactor();
 
-            if ($this->shippingFee) {
+            if ($this->feeOnShipping) {
                 $shipping *= $this->getFeeFactor();
             }
 
