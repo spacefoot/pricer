@@ -468,7 +468,7 @@ class Pricer
     protected function getPriceWithCompetitor(float $basePrice, float $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
     {
         $price = new WinningPrice();
-        $price->sellingPrice = $basePrice;
+        $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
         $price->competitorPrice = $competitorPrice;
 
@@ -506,7 +506,7 @@ class Pricer
     protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null) : WinningPrice
     {
         $price = new WinningPrice();
-        $price->sellingPrice = $basePrice;
+        $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
 
 
@@ -521,7 +521,7 @@ class Pricer
 
         if (Pricer::TARGET_PRICE === $this->noCompetitorPolicy) {
             $price->type = WinningPrice::TARGET;
-            $price->sellingPrice = $targetPrice;
+            $price->value = $targetPrice;
         }
 
         return $price;
@@ -540,7 +540,7 @@ class Pricer
     public function getWinningPrice(float $basePrice, float $purchasePrice = null, float $competitorPrice = null) : WinningPrice
     {
         $price = new WinningPrice();
-        $price->sellingPrice = $basePrice;
+        $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
 
         $targetPrice = null;

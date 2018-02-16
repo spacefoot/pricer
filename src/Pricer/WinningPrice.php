@@ -17,7 +17,7 @@ class WinningPrice
      * Selling price
      * @var float
      */
-    public $sellingPrice;
+    public $value;
 
 
     /**
@@ -35,17 +35,17 @@ class WinningPrice
 
     /**
      * Set the selling price only if the new value is lower than current value
-     * @param float $sellingPrice
+     * @param float $price
      * @param WinningPrice::BASE | WinningPrice::COMPETITOR | WinningPrice::MIN | WinningPrice::TARGET
      * @return bool
      */
-    public function setSellingPriceDown(float $sellingPrice, string $type) : bool
+    public function setSellingPriceDown(float $price, string $type) : bool
     {
-        if ($this->sellingPrice < $sellingPrice) {
+        if ($this->value < $price) {
             return false;
         }
 
-        $this->sellingPrice = $sellingPrice;
+        $this->value = $price;
         $this->type = $type;
         return true;
     }
@@ -53,7 +53,7 @@ class WinningPrice
 
     public function getCents() : int
     {
-        return (int) round(100 * $this->sellingPrice);
+        return (int) round(100 * $this->value);
     }
 
     /**

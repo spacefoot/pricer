@@ -7,7 +7,7 @@ class PricerTest extends TestCase
 {
     protected function assertPrice(float $expected, WinningPrice $current)
     {
-        $this->assertEquals($expected, $current->sellingPrice, 'Price type = '.$current->type, 0.01);
+        $this->assertEquals($expected, $current->value, 'Price type = '.$current->type, 0.01);
     }
 
     protected function getNoshippingPricer() : Pricer
@@ -303,11 +303,11 @@ class PricerTest extends TestCase
         $price16 = $pricer16->setFeeOnShipping(false)->getWinningPrice(14.00, 6.00);
         $price16s = $pricer16->setFeeOnShipping(true)->getWinningPrice(14.00, 6.00);
 
-        $this->assertLessThan($price15s->sellingPrice, $price15->sellingPrice);
-        $this->assertLessThan($price16s->sellingPrice, $price16->sellingPrice);
+        $this->assertLessThan($price15s->value, $price15->value);
+        $this->assertLessThan($price16s->value, $price16->value);
 
-        $this->assertLessThan($price16->sellingPrice, $price15->sellingPrice);
-        $this->assertLessThan($price16s->sellingPrice, $price15s->sellingPrice);
+        $this->assertLessThan($price16->value, $price15->value);
+        $this->assertLessThan($price16s->value, $price15s->value);
     }
 
     public function test3Competitors()
