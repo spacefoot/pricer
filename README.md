@@ -62,8 +62,8 @@ Pricer output to use  as a discounted price
 
 Contain one of the following possible type
 
-| Constant                 | type value                     |
-|--------------------------|--------------------------------|
+| Constant                | type value                     |
+|-------------------------|--------------------------------|
 | WiningPrice::BASE       | Unmodified base price          |
 | WiningPrice::COMPETITOR | Aligned to competitor          |
 | WiningPrice::MIN        | Limited by align markup        |

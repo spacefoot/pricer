@@ -97,7 +97,7 @@ class PricerTest extends TestCase
 
         $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(10.90));
 
-        $this->assertTrue(isset($price->competitor));
+        $this->assertTrue(isset($price->competitorPrice));
         $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
         $this->assertPrice(10.89, $price);
     }
@@ -108,7 +108,7 @@ class PricerTest extends TestCase
 
         $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(12.90));
 
-        $this->assertTrue(isset($price->competitor));
+        $this->assertTrue(isset($price->competitorPrice));
         $this->assertEquals(WiningPrice::TARGET, $price->type);
         $this->assertPrice(11.43, $price);
     }
@@ -211,7 +211,7 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(null)
-            ->setDecreaseToTarget(true);
+            ->setCompetitorPolicy(Pricer::NO_ALIGN);
 
         $competitor = $this->getCompetitor(14.00);
 
@@ -224,16 +224,15 @@ class PricerTest extends TestCase
 
     /**
      * base price higher than target markup price, with decrease to target disabled
-     * Price contain error, price is not modified
+     * Price is not modified
      */
     public function testDecreaseToTargetDisabled()
     {
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(null)
-            ->setDecreaseToTarget(false);
+            ->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 
         $price = $pricer->getWiningPrice(35.00, 6.00);
-        $this->assertInstanceOf('Pricer\UnexpectedPriceException', $price->error);
         $this->assertEquals(WiningPrice::BASE, $price->type);
     }
 
@@ -297,7 +296,6 @@ class PricerTest extends TestCase
             ->setTargetMarkup(10);
         $price = $pricer->getWiningPrice(6.99, 7.00);
 
-        $this->assertInstanceOf('Pricer\UnexpectedPriceException', $price->error);
         $this->assertEquals(WiningPrice::BASE, $price->type);
     }
 

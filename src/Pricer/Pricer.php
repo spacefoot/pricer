@@ -7,6 +7,37 @@ namespace Pricer;
 class Pricer
 {
     /**
+     * competitor policy, do not align to competitor price
+     * @var integer
+     */
+    const NO_ALIGN = 0;
+
+    /**
+     * competitor policy, align to competito price
+     * @var integer
+     */
+    const ALIGN = 1;
+
+    /**
+     * No competitor policy, return base price
+     * @var integer
+     */
+    const BASE_PRICE = 0;
+
+    /**
+     * No competitor policy, always decrease to target price if price is higher than target selling markup
+     * @var integer
+     */
+    const TARGET_BELOW_BASE_PRICE = 1;
+
+    /**
+     * No competitor policy, always change price to target price
+     * @var integer
+     */
+    const TARGET_PRICE = 2;
+
+
+    /**
      * Real cost of shipping for the seller
      * @var float
      */
@@ -25,10 +56,14 @@ class Pricer
     protected $feeOnShipping = false;
 
     /**
-     * Always decrease to target price if price is higher than target selling markup
-     * @var string
+     * @var int
      */
-    protected $decreaseToTarget = true;
+    protected $competitorPolicy = self::ALIGN;
+
+    /**
+     * @var int
+     */
+    protected $noCompetitorPolicy = self::TARGET_BELOW_BASE_PRICE;
 
     /**
      * Align selling markup percentage, can be null
@@ -187,24 +222,44 @@ class Pricer
     }
 
     /**
-     * Enable/Disable always decrease to target price if price is higher than target selling markup
-     * @param boolean $decrease
+     * Set competitor policy
+     * @param int $policy Pricer::ALIGN | Pricer::NO_ALIGN
      * @return self
      */
-    public function setDecreaseToTarget(bool $decrease) : self
+    public function setCompetitorPolicy(int $policy) : self
     {
-        $this->decreaseToTarget = $decrease;
+        $this->competitorPolicy = $policy;
 
         return $this;
     }
 
     /**
-     * Test if pricer decrease output price to target selling rate
-     * @return bool
+     * Get competitor policy
+     * @return int
      */
-    public function getDecreaseToTarget() : bool
+    public function getCompetitorPolicy() : int
     {
-        return $this->decreaseToTarget;
+        return $this->competitorPolicy;
+    }
+
+    /**
+     * Set no competitor policy
+     * @param int $policy   Pricer::BASE_PRICE | Pricer::TARGET_BELOW_BASE_PRICE | Pricer::TARGET_PRICE
+     */
+    public function setNoCompetitorPolicy(int $policy) : self
+    {
+        $this->noCompetitorPolicy = $policy;
+
+        return $this;
+    }
+
+    /**
+     * Get no competitor policy
+     * @return int
+     */
+    public function getNoCompetitorPolicy() : int
+    {
+        return $this->noCompetitorPolicy;
     }
 
     /**
@@ -404,31 +459,75 @@ class Pricer
     }
 
     /**
-     * Lower price to target price if necessary, check price validity
-     * @param WiningPrice $price
-     * @param float $minPrice
+     * Get price with competitor
+     * @param float $basePrice
+     * @param CompetitorPrice $competitorPrice
      * @param float $targetPrice
-     * @throws UnexpectedPriceException
+     * @param float $minPrice
+     * @param float $purchasePrice
+     * @return WiningPrice
      */
-    protected function normalizePrice(WiningPrice $price, float $minPrice, float $targetPrice = null)
+    protected function getPriceWithCompetitor(float $basePrice, CompetitorPrice $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
     {
-        if (isset($targetPrice)) {
-            if ($this->decreaseToTarget) {
-                // If the price remain higher than target price, normalize
-                $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
-            } elseif ($price->sellingPrice > $targetPrice) {
-                throw new UnexpectedPriceException(
-                    sprintf('Current selling price %f higher than target price %f', $price->sellingPrice, $targetPrice)
-                );
-            }
+        $price = new WiningPrice();
+        $price->sellingPrice = $basePrice;
+        $price->type = WiningPrice::BASE;
+        $price->competitorPrice = $competitorPrice;
+
+        if (isset($targetPrice) && $competitorPrice->sellingPrice > $targetPrice) {
+            $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
+            return $price;
         }
 
-        if ($price->sellingPrice < $minPrice) {
-            throw new UnexpectedPriceException(
-                sprintf('Current selling price %f lower than minimal price %f', $price->sellingPrice, $minPrice)
-            );
+        if (!isset($this->alignMarkupFactor)) {
+            return $price;
         }
+
+        if ($this->canUseCompetitor($competitorPrice, $minPrice)) {
+            $price->setSellingPriceDown(
+                round($competitorPrice->sellingPrice - $this->competitorGap, 2),
+                WiningPrice::COMPETITOR
+            );
+            return $price;
+        }
+
+        $price->setSellingPriceDown(
+            round($minPrice, 2),
+            isset($purchasePrice) ? WiningPrice::MIN : WiningPrice::MIN_RATED
+        );
+        return $price;
     }
+
+    /**
+     * Get price with no competitor
+     * @param float $basePrice
+     * @param float $targetPrice
+     * @return WiningPrice
+     */
+    protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null) : WiningPrice
+    {
+        $price = new WiningPrice();
+        $price->sellingPrice = $basePrice;
+        $price->type = WiningPrice::BASE;
+
+
+        if (!isset($targetPrice)) {
+            return $price;
+        }
+
+        if (Pricer::TARGET_BELOW_BASE_PRICE === $this->noCompetitorPolicy) {
+            // If the price remain higher than target price, normalize
+            $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
+        }
+
+        if (Pricer::TARGET_PRICE === $this->noCompetitorPolicy) {
+            $price->type = WiningPrice::TARGET;
+            $price->sellingPrice = $targetPrice;
+        }
+
+        return $price;
+    }
+
 
     /**
      * Compute a wining price
@@ -439,7 +538,7 @@ class Pricer
      *
      * @return WiningPrice
      */
-    public function getWiningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitor = null) : WiningPrice
+    public function getWiningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitorPrice = null) : WiningPrice
     {
         $price = new WiningPrice();
         $price->sellingPrice = $basePrice;
@@ -453,29 +552,10 @@ class Pricer
             $minPrice = $this->getMinPrice($purchasePrice);
         }
 
-
-        if (isset($competitor) && isset($this->alignMarkupFactor)) {
-            $price->competitor = $competitor;
-
-            if ($this->canUseCompetitor($competitor, $minPrice)) {
-                $price->setSellingPriceDown(
-                    round($competitor->sellingPrice - $this->competitorGap, 2),
-                    WiningPrice::COMPETITOR
-                );
-            } else {
-                $price->setSellingPriceDown(
-                    round($minPrice, 2),
-                    isset($purchasePrice) ? WiningPrice::MIN : WiningPrice::MIN_RATED
-                );
-            }
+        if (isset($competitorPrice)) {
+            return $this->getPriceWithCompetitor($basePrice, $competitorPrice, $targetPrice, $minPrice, $purchasePrice);
         }
 
-        try {
-            $this->normalizePrice($price, $minPrice, $targetPrice);
-        } catch (UnexpectedPriceException $e) {
-            $price->error = $e;
-        }
-
-        return $price;
+        return $this->getPriceWithNoCompetitor($basePrice, $targetPrice);
     }
 }

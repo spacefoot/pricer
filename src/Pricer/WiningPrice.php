@@ -28,15 +28,10 @@ class WiningPrice
 
     /**
      * If margin lower than targetMargin, contain the competitor
-     * @var Competitor
+     * @var CompetitorPrice
      */
-    public $competitor = null;
+    public $competitorPrice = null;
 
-    /**
-     * Error on price, can be null
-     * @var UnexpectedPriceException
-     */
-    public $error = null;
 
     /**
      * Set the selling price only if the new value is lower than current value
