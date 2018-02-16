@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class PricerTest extends TestCase
 {
-    protected function assertPrice(float $expected, WiningPrice $current)
+    protected function assertPrice(float $expected, WinningPrice $current)
     {
         $this->assertEquals($expected, $current->sellingPrice, 'Price type = '.$current->type, 0.01);
     }
@@ -54,13 +54,13 @@ class PricerTest extends TestCase
     public function testNoChange()
     {
         $pricer = new Pricer();
-        $price = $pricer->getWiningPrice(19.35);
+        $price = $pricer->getWinningPrice(19.35);
         $this->assertPrice(19.35, $price);
 
-        $price = $this->getNoshippingPricer()->getWiningPrice(19.35);
+        $price = $this->getNoshippingPricer()->getWinningPrice(19.35);
         $this->assertPrice(19.35, $price);
 
-        $price = $this->getFeesPricer()->getWiningPrice(19.35);
+        $price = $this->getFeesPricer()->getWinningPrice(19.35);
         $this->assertPrice(19.35, $price);
     }
 
@@ -69,25 +69,25 @@ class PricerTest extends TestCase
      */
     public function testPurchasePriceNoCompetitor()
     {
-        $price = $this->getNoshippingPricer()->getWiningPrice(19.35, 8.00);
+        $price = $this->getNoshippingPricer()->getWinningPrice(19.35, 8.00);
         $this->assertPrice(11.43, $price);
     }
 
     public function testHighPurchasePriceNoCompetitor()
     {
-        $price = $this->getNoshippingPricer()->getWiningPrice(19.35, 18.00);
+        $price = $this->getNoshippingPricer()->getWinningPrice(19.35, 18.00);
         $this->assertPrice(19.35, $price);
     }
 
     public function testPurchasePriceNoCompetitorFees()
     {
-        $price = $this->getFeesPricer()->getWiningPrice(19.35, 8.00);
+        $price = $this->getFeesPricer()->getWinningPrice(19.35, 8.00);
         $this->assertPrice(14.50, $price);
     }
 
     public function testHighPurchasePriceNoCompetitorFees()
     {
-        $price = $this->getFeesPricer()->getWiningPrice(19.35, 18.00);
+        $price = $this->getFeesPricer()->getWinningPrice(19.35, 18.00);
         $this->assertPrice(19.35, $price);
     }
 
@@ -95,10 +95,10 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getNoshippingPricer();
 
-        $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(10.90));
+        $price = $pricer->getWinningPrice(19.35, 8.00, $this->getCompetitor(10.90));
 
         $this->assertTrue(isset($price->competitorPrice));
-        $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
+        $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(10.89, $price);
     }
 
@@ -106,10 +106,10 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getNoshippingPricer();
 
-        $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(12.90));
+        $price = $pricer->getWinningPrice(19.35, 8.00, $this->getCompetitor(12.90));
 
         $this->assertTrue(isset($price->competitorPrice));
-        $this->assertEquals(WiningPrice::TARGET, $price->type);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
         $this->assertPrice(11.43, $price);
     }
 
@@ -118,8 +118,8 @@ class PricerTest extends TestCase
         // shipping + fees = lower than min markup
         $pricer = $this->getFeesPricer();
 
-        $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(10.90));
-        $this->assertEquals(WiningPrice::MIN, $price->type);
+        $price = $pricer->getWinningPrice(19.35, 8.00, $this->getCompetitor(10.90));
+        $this->assertEquals(WinningPrice::MIN, $price->type);
         $this->assertPrice(12.53, $price);
     }
 
@@ -127,8 +127,8 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer();
 
-        $price = $pricer->getWiningPrice(19.35, 8.00, $this->getCompetitor(13.90));
-        $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
+        $price = $pricer->getWinningPrice(19.35, 8.00, $this->getCompetitor(13.90));
+        $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(13.89, $price);
     }
 
@@ -143,8 +143,8 @@ class PricerTest extends TestCase
 
         $pricer = $this->getFeesPricer();
         $pricer->setFeeOnShipping(false);
-        $price = $pricer->getWiningPrice(35.00, 18.00);
-        $this->assertEquals(WiningPrice::TARGET, $price->type);
+        $price = $pricer->getWinningPrice(35.00, 18.00);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
         $this->assertPrice(33.70, $price);
     }
 
@@ -152,8 +152,8 @@ class PricerTest extends TestCase
     public function testNoSellingPriceNoCompetitor()
     {
         $pricer = $this->getFeesPricer();
-        $price = $pricer->getWiningPrice(35.00, null);
-        $this->assertEquals(WiningPrice::BASE, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null);
+        $this->assertEquals(WinningPrice::BASE, $price->type);
         $this->assertPrice(35.00, $price);
     }
 
@@ -163,8 +163,8 @@ class PricerTest extends TestCase
         $pricer = $this->getFeesPricer();
         $pricer->setCompetitorGap(0.02);
 
-        $price = $pricer->getWiningPrice(35.00, null, $this->getCompetitor(34.99));
-        $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null, $this->getCompetitor(34.99));
+        $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(34.97, $price);
     }
 
@@ -176,8 +176,8 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer();
 
-        $price = $pricer->getWiningPrice(35.00, null, $this->getCompetitor(34.99));
-        $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null, $this->getCompetitor(34.99));
+        $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(34.98, $price);
     }
 
@@ -188,8 +188,8 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer();
 
-        $price = $pricer->getWiningPrice(35.00, null, $this->getCompetitor(14.00));
-        $this->assertEquals(WiningPrice::MIN_RATED, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null, $this->getCompetitor(14.00));
+        $this->assertEquals(WinningPrice::MIN_RATED, $price->type);
         $this->assertPrice(31.50, $price);
     }
 
@@ -200,8 +200,8 @@ class PricerTest extends TestCase
     {
         $pricer = $this->getFeesPricer();
 
-        $price = $pricer->getWiningPrice(35.00, null, $this->getCompetitor(31.51));
-        $this->assertEquals(WiningPrice::COMPETITOR, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null, $this->getCompetitor(31.51));
+        $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(31.50, $price);
     }
 
@@ -215,11 +215,11 @@ class PricerTest extends TestCase
 
         $competitor = $this->getCompetitor(14.00);
 
-        $price = $pricer->getWiningPrice(35.00, null, $competitor);
-        $this->assertEquals(WiningPrice::BASE, $price->type);
+        $price = $pricer->getWinningPrice(35.00, null, $competitor);
+        $this->assertEquals(WinningPrice::BASE, $price->type);
 
-        $price = $pricer->getWiningPrice(35.00, 6.00, $competitor);
-        $this->assertEquals(WiningPrice::TARGET, $price->type);
+        $price = $pricer->getWinningPrice(35.00, 6.00, $competitor);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
     }
 
     /**
@@ -232,8 +232,8 @@ class PricerTest extends TestCase
             ->setAlignMarkup(null)
             ->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 
-        $price = $pricer->getWiningPrice(35.00, 6.00);
-        $this->assertEquals(WiningPrice::BASE, $price->type);
+        $price = $pricer->getWinningPrice(35.00, 6.00);
+        $this->assertEquals(WinningPrice::BASE, $price->type);
     }
 
 
@@ -246,10 +246,10 @@ class PricerTest extends TestCase
         $pricer = $this->getNoshippingPricer()
             ->setAlignMarkup(10)
             ->setTargetMarkup(10);
-        $price = $pricer->getWiningPrice(35.00, 9.00);
+        $price = $pricer->getWinningPrice(35.00, 9.00);
 
         $this->assertPrice(10.00, $price);
-        $this->assertEquals(WiningPrice::TARGET, $price->type);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
     }
 
 
@@ -262,10 +262,10 @@ class PricerTest extends TestCase
         $pricer = $this->getNoshippingPricer()
             ->setAlignMarkup(10)
             ->setTargetMarkup(10);
-        $price = $pricer->getWiningPrice(35.00);
+        $price = $pricer->getWinningPrice(35.00);
 
         $this->assertPrice(35.00, $price);
-        $this->assertEquals(WiningPrice::BASE, $price->type);
+        $this->assertEquals(WinningPrice::BASE, $price->type);
     }
 
 
@@ -274,10 +274,10 @@ class PricerTest extends TestCase
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(10)
             ->setTargetMarkup(10);
-        $price = $pricer->getWiningPrice(11.00, 7.00);
+        $price = $pricer->getWinningPrice(11.00, 7.00);
 
         $this->assertPrice(10.21, $price);
-        $this->assertEquals(WiningPrice::TARGET, $price->type);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
 
         // markup factor: 1,111111111
         // 7,77777
@@ -294,9 +294,9 @@ class PricerTest extends TestCase
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(10)
             ->setTargetMarkup(10);
-        $price = $pricer->getWiningPrice(6.99, 7.00);
+        $price = $pricer->getWinningPrice(6.99, 7.00);
 
-        $this->assertEquals(WiningPrice::BASE, $price->type);
+        $this->assertEquals(WinningPrice::BASE, $price->type);
     }
 
     public function testfeesUpdate()
@@ -304,11 +304,11 @@ class PricerTest extends TestCase
         $pricer15 = $this->getFeesPricer()->setFeeRate(15);
         $pricer16 = $this->getFeesPricer()->setFeeRate(16);
 
-        $price15 = $pricer15->setFeeOnShipping(false)->getWiningPrice(14.00, 6.00);
-        $price15s = $pricer15->setFeeOnShipping(true)->getWiningPrice(14.00, 6.00);
+        $price15 = $pricer15->setFeeOnShipping(false)->getWinningPrice(14.00, 6.00);
+        $price15s = $pricer15->setFeeOnShipping(true)->getWinningPrice(14.00, 6.00);
 
-        $price16 = $pricer16->setFeeOnShipping(false)->getWiningPrice(14.00, 6.00);
-        $price16s = $pricer16->setFeeOnShipping(true)->getWiningPrice(14.00, 6.00);
+        $price16 = $pricer16->setFeeOnShipping(false)->getWinningPrice(14.00, 6.00);
+        $price16s = $pricer16->setFeeOnShipping(true)->getWinningPrice(14.00, 6.00);
 
         $this->assertLessThan($price15s->sellingPrice, $price15->sellingPrice);
         $this->assertLessThan($price16s->sellingPrice, $price16->sellingPrice);
@@ -323,9 +323,9 @@ class PricerTest extends TestCase
         ->setAlignMarkup(10)
         ->setTargetMarkup(20);
 
-        $this->assertPrice(11.11, $pricer->getWiningPrice(15.00, 10.00, $this->getCompetitor(11.00)));
-        $this->assertPrice(11.99, $pricer->getWiningPrice(15.00, 10.00, $this->getCompetitor(12.00)));
-        $this->assertPrice(12.50, $pricer->getWiningPrice(15.00, 10.00, $this->getCompetitor(13.00)));
-        $this->assertPrice(12.50, $pricer->getWiningPrice(15.00, 10.00));
+        $this->assertPrice(11.11, $pricer->getWinningPrice(15.00, 10.00, $this->getCompetitor(11.00)));
+        $this->assertPrice(11.99, $pricer->getWinningPrice(15.00, 10.00, $this->getCompetitor(12.00)));
+        $this->assertPrice(12.50, $pricer->getWinningPrice(15.00, 10.00, $this->getCompetitor(13.00)));
+        $this->assertPrice(12.50, $pricer->getWinningPrice(15.00, 10.00));
     }
 }

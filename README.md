@@ -19,7 +19,7 @@ This a composer library, not registered in packagist, first add the repository i
 
 Then install:
 
-```php
+```bash
 composer install spacefoot/pricer --save
 ```
 
@@ -39,20 +39,20 @@ $pricer->setAlignMarkup(15);
 $basePrice = 14.80;
 $purchasePrice = 10.00;
 
-$pricer->getWiningPrice($basePrice, $purchasePrice);
-// return a WiningPrice object with 14.29
+$pricer->getWinningPrice($basePrice, $purchasePrice);
+// return a WinningPrice object with 14.29
 
 // with a competitor
 $competitor = new CompetitorPrice(11.90);
 $competitor->name = 'Seller name';
-$pricer->getWiningPrice($basePrice, $purchasePrice, $competitor);
-// return a WiningPrice object with 11.89
+$pricer->getWinningPrice($basePrice, $purchasePrice, $competitor);
+// return a WinningPrice object with 11.89
 
 ```
 
 ## Output price
 
-The pricer output a `WiningPrice` object with properties:
+The pricer output a `WinningPrice` object with properties:
 
 ### sellingPrice
 
@@ -64,11 +64,11 @@ Contain one of the following possible type
 
 | Constant                | type value                     |
 |-------------------------|--------------------------------|
-| WiningPrice::BASE       | Unmodified base price          |
-| WiningPrice::COMPETITOR | Aligned to competitor          |
-| WiningPrice::MIN        | Limited by align markup        |
-| WiningPrice::TARGET     | Limited by target markup       |
-| WiningPrice::MIN_RATED  | Max price drop from base price |
+| WinningPrice::BASE       | Unmodified base price          |
+| WinningPrice::COMPETITOR | Aligned to competitor          |
+| WinningPrice::MIN        | Limited by align markup        |
+| WinningPrice::TARGET     | Limited by target markup       |
+| WinningPrice::MIN_RATED  | Max price drop from base price |
 
 ### error
 

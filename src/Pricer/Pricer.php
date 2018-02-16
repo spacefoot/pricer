@@ -463,17 +463,17 @@ class Pricer
      * @param float $targetPrice
      * @param float $minPrice
      * @param float $purchasePrice
-     * @return WiningPrice
+     * @return WinningPrice
      */
     protected function getPriceWithCompetitor(float $basePrice, CompetitorPrice $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
     {
-        $price = new WiningPrice();
+        $price = new WinningPrice();
         $price->sellingPrice = $basePrice;
-        $price->type = WiningPrice::BASE;
+        $price->type = WinningPrice::BASE;
         $price->competitorPrice = $competitorPrice;
 
         if (isset($targetPrice) && $competitorPrice->sellingPrice > $targetPrice) {
-            $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
+            $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
             return $price;
         }
 
@@ -484,14 +484,14 @@ class Pricer
         if ($this->canUseCompetitor($competitorPrice, $minPrice)) {
             $price->setSellingPriceDown(
                 round($competitorPrice->sellingPrice - $this->competitorGap, 2),
-                WiningPrice::COMPETITOR
+                WinningPrice::COMPETITOR
             );
             return $price;
         }
 
         $price->setSellingPriceDown(
             round($minPrice, 2),
-            isset($purchasePrice) ? WiningPrice::MIN : WiningPrice::MIN_RATED
+            isset($purchasePrice) ? WinningPrice::MIN : WinningPrice::MIN_RATED
         );
 
         return $price;
@@ -501,13 +501,13 @@ class Pricer
      * Get price with no competitor
      * @param float $basePrice
      * @param float $targetPrice
-     * @return WiningPrice
+     * @return WinningPrice
      */
-    protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null) : WiningPrice
+    protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null) : WinningPrice
     {
-        $price = new WiningPrice();
+        $price = new WinningPrice();
         $price->sellingPrice = $basePrice;
-        $price->type = WiningPrice::BASE;
+        $price->type = WinningPrice::BASE;
 
 
         if (!isset($targetPrice)) {
@@ -516,11 +516,11 @@ class Pricer
 
         if (Pricer::TARGET_BELOW_BASE_PRICE === $this->noCompetitorPolicy) {
             // If the price remain higher than target price, normalize
-            $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
+            $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
         }
 
         if (Pricer::TARGET_PRICE === $this->noCompetitorPolicy) {
-            $price->type = WiningPrice::TARGET;
+            $price->type = WinningPrice::TARGET;
             $price->sellingPrice = $targetPrice;
         }
 
@@ -535,13 +535,13 @@ class Pricer
      * @param float         $purchasePrice          Can be null
      * @param CompetitorPrice    $competitor             Can be null
      *
-     * @return WiningPrice
+     * @return WinningPrice
      */
-    public function getWiningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitorPrice = null) : WiningPrice
+    public function getWinningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitorPrice = null) : WinningPrice
     {
-        $price = new WiningPrice();
+        $price = new WinningPrice();
         $price->sellingPrice = $basePrice;
-        $price->type = WiningPrice::BASE;
+        $price->type = WinningPrice::BASE;
 
         $targetPrice = null;
         $minPrice = $basePrice * $this->dropRateFactor;

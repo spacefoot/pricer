@@ -4,7 +4,7 @@ namespace Pricer;
 /**
  * Represent a new price on a product
  */
-class WiningPrice
+class WinningPrice
 {
     const BASE          = 'Unmodified base price';
     const COMPETITOR    = 'Aligned to competitor';
@@ -36,7 +36,7 @@ class WiningPrice
     /**
      * Set the selling price only if the new value is lower than current value
      * @param float $sellingPrice
-     * @param WiningPrice::BASE | WiningPrice::COMPETITOR | WiningPrice::MIN | WiningPrice::TARGET
+     * @param WinningPrice::BASE | WinningPrice::COMPETITOR | WinningPrice::MIN | WinningPrice::TARGET
      * @return bool
      */
     public function setSellingPriceDown(float $sellingPrice, string $type) : bool
