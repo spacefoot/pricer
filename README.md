@@ -59,9 +59,13 @@ Contain an exception if sellingPrice is higher than target price or lower than a
 
 ### Markups for price computed from purchase price
 
-__Align markup__: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price
+__Align markup__: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price.
 
-__Target markup__: This is the markup on selling price in percentage used to compute the price when there is no competitor
+The default value is null, alignement to competitor is disabled.
+
+__Target markup__: This is the markup on selling price in percentage used to compute the price when there is no competitor.
+
+The default value is 0%.
 
 
 ```php
@@ -81,7 +85,7 @@ $pricer->setTargetMarkup(10);
 
 If purcharse price is unknown, the target price and align price can not be computed. The pricer compute a discounted price from a base price, when a competitor is lower than the base price, the pricer compute a lower price aligned to best competitor is the limit defined by the drop rate.
 
-Allow a price drop up to 10%:
+The default value is 10%, the `setDropRate` can be used to change the drop rate.
 
 ```php
 $pricer->setDropRate(10);
@@ -105,7 +109,7 @@ $pricer->setBestCompetitorGap(0.03);
 
 ### Other options
 
-Disable competitor aligment:
+Disable competitor aligment, this is the default behaviour:
 
 ```php
 $pricer->setAlignMarkup(null);
@@ -117,6 +121,8 @@ Disable price decrease to target price, in this case only an error message remai
 ```php
 $pricer->setDecreaseToTarget(false);
 ```
+
+default value is true
 
 
 ## Shipping price/Shipping cost
@@ -154,7 +160,7 @@ In this example, if pricer output is greater than 20 but lower than 70, the ship
 
 ## Fees
 
-The same fee rate is used to compute fees on price and fees on shipping cost
+The same fee rate is used to compute fees on price and fees on shipping cost, on a default pricer instance, there is no fees
 
 Apply fees on pricer output with a fee rate on percentage:
 
