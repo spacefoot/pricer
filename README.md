@@ -1,5 +1,7 @@
 # pricer
 
+[![Build Status](https://travis-ci.org/spacefoot/pricer.svg?branch=master)](https://travis-ci.org/spacefoot/pricer)
+
 The pricer is a tool used to compute a discounted price according to different parameters.
 
 ## Install library
@@ -43,9 +45,8 @@ $pricer->getWinningPrice($basePrice, $purchasePrice);
 // return a WinningPrice object with 14.29
 
 // with a competitor
-$competitor = new CompetitorPrice(11.90);
-$competitor->name = 'Seller name';
-$pricer->getWinningPrice($basePrice, $purchasePrice, $competitor);
+$competitorPrice = 11.90;
+$pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
 // return a WinningPrice object with 11.89
 
 ```

@@ -28,7 +28,7 @@ class WinningPrice
 
     /**
      * If margin lower than targetMargin, contain the competitor
-     * @var CompetitorPrice
+     * @var float
      */
     public $competitorPrice = null;
 

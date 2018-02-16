@@ -444,14 +444,14 @@ class Pricer
 
     /**
      * Can use competitor if competitor price - 0.01 >= min price
-     * @param CompetitorPrice $competitorPrice
+     * @param float $competitorPrice
      * @param float $minPrice
      *
      * @return bool
      */
-    protected function canUseCompetitor(CompetitorPrice $competitorPrice, float $minPrice) : bool
+    protected function canUseCompetitor(float $competitorPrice, float $minPrice) : bool
     {
-        $estimatedCents = (int) round(100 * ($competitorPrice->sellingPrice - $this->getCompetitorGap()));
+        $estimatedCents = (int) round(100 * ($competitorPrice - $this->getCompetitorGap()));
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
@@ -459,20 +459,20 @@ class Pricer
     /**
      * Get price with competitor
      * @param float $basePrice
-     * @param CompetitorPrice $competitorPrice
+     * @param float $competitorPrice
      * @param float $targetPrice
      * @param float $minPrice
      * @param float $purchasePrice
      * @return WinningPrice
      */
-    protected function getPriceWithCompetitor(float $basePrice, CompetitorPrice $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
+    protected function getPriceWithCompetitor(float $basePrice, float $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
     {
         $price = new WinningPrice();
         $price->sellingPrice = $basePrice;
         $price->type = WinningPrice::BASE;
         $price->competitorPrice = $competitorPrice;
 
-        if (isset($targetPrice) && $competitorPrice->sellingPrice > $targetPrice) {
+        if (isset($targetPrice) && $competitorPrice > $targetPrice) {
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
             return $price;
         }
@@ -483,7 +483,7 @@ class Pricer
 
         if ($this->canUseCompetitor($competitorPrice, $minPrice)) {
             $price->setSellingPriceDown(
-                round($competitorPrice->sellingPrice - $this->competitorGap, 2),
+                round($competitorPrice - $this->competitorGap, 2),
                 WinningPrice::COMPETITOR
             );
             return $price;
@@ -531,13 +531,13 @@ class Pricer
     /**
      * Compute a wining price
      *
-     * @param float         $basePrice              Store 0 price, never modified by the pricer
-     * @param float         $purchasePrice          Can be null
-     * @param CompetitorPrice    $competitor             Can be null
+     * @param float     $basePrice              Store 0 price, never modified by the pricer
+     * @param float     $purchasePrice          Can be null
+     * @param float     $competitorPrice        Can be null
      *
      * @return WinningPrice
      */
-    public function getWinningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitorPrice = null) : WinningPrice
+    public function getWinningPrice(float $basePrice, float $purchasePrice = null, float $competitorPrice = null) : WinningPrice
     {
         $price = new WinningPrice();
         $price->sellingPrice = $basePrice;
