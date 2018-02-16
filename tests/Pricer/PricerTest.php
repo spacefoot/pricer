@@ -335,4 +335,47 @@ class PricerTest extends TestCase
         $this->assertGreaterThan(24.00, $price->value);
     }
 
+    /**
+     *
+     */
+    public function testNoTargetMarkup()
+    {
+        $pricer = $this->getFeesPricer()->setTargetMarkup(null);
+
+        $this->expectException(\Exception::class);
+        $pricer->getWinningPrice(24.00, 20.00);
+    }
+
+
+    public function testFloatTargetMarkup()
+    {
+        $basePrice = 900000.00;
+        $purchasePrice = 500000.00;
+
+        $pricer1 = new Pricer();
+        $pricer2 = new Pricer();
+
+        $pricer1->setTargetMarkup(20.10);
+        $pricer2->setTargetMarkup(20.90);
+
+        $p1 = $pricer1->getWinningPrice($basePrice, $purchasePrice);
+        $p2 = $pricer2->getWinningPrice($basePrice, $purchasePrice);
+
+        $this->assertGreaterThan($p1->value, $p2->value);
+
+    }
+
+    public function testFloatFeeRate()
+    {
+        $basePrice = 900000.00;
+        $purchasePrice = 500000.00;
+
+        $pricer1 = $this->getFeesPricer()->setFeeRate(15.1);
+        $pricer2 = $this->getFeesPricer()->setFeeRate(15.9);
+
+        $p1 = $pricer1->getWinningPrice($basePrice, $purchasePrice);
+        $p2 = $pricer2->getWinningPrice($basePrice, $purchasePrice);
+
+        $this->assertGreaterThan($p1->value, $p2->value);
+    }
 }

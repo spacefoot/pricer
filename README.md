@@ -78,11 +78,11 @@ Contain one of the following possible type
 
 __Align markup__: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price.
 
-The default value is null, alignment to competitor is disabled.
+The default value is null.
 
 __Target markup__: This is the markup on selling price in percentage used to compute the price when there is no competitor.
 
-The default value is 0%.
+The default value is null. The target markup is mandatory if the purchase price is given as third argument in the `getWinningPrice` method.
 
 
 ```php

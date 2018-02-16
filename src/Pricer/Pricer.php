@@ -67,7 +67,7 @@ class Pricer
 
     /**
      * Align selling markup percentage, can be null
-     * @var int | null
+     * @var float
      */
     protected $alignMarkup = null;
 
@@ -80,19 +80,19 @@ class Pricer
 
     /**
      * target selling markup percentage
-     * @var int
+     * @var float
      */
-    protected $targetMarkup = 0;
+    protected $targetMarkup = null;
 
     /**
      * factor to obtain the desired selling price from purchase price
-     * @var int
+     * @var float
      */
-    protected $targetMarkupFactor = 1;
+    protected $targetMarkupFactor = null;
 
     /**
      * Drop rate percentage, for products without purchase price
-     * @var integer
+     * @var float
      */
     protected $dropRate = 10;
 
@@ -101,6 +101,12 @@ class Pricer
      * @var float
      */
     protected $dropRateFactor = 0.9;
+
+    /**
+     * Fee rate
+     * @var float
+     */
+    protected $feeRate = 0.0;
 
     /**
      * fee factor if fees are used on selling price
@@ -117,10 +123,10 @@ class Pricer
     /**
      * Get factor from selling markup (taux de marque)
      * to apply on purchase price
-     * @param int $rate
+     * @param float $rate
      * @return float
      */
-    private function getMarkupFactor(int $rate) : float
+    private function getRateFactor(float $rate) : float
     {
         return 100/(100-$rate);
     }
@@ -130,19 +136,19 @@ class Pricer
      * @param float $fee       Fee percentage
      * @return self
      */
-    public function setFeeRate(int $fee) : self
+    public function setFeeRate(float $fee) : self
     {
         $this->feeRate = $fee;
-        $this->feeFactor = $this->getMarkupFactor($fee);
+        $this->feeFactor = $this->getRateFactor($fee);
 
         return $this;
     }
 
     /**
      * Get fee selling rate
-     * @return int
+     * @return float
      */
-    public function getFeeRate() : int
+    public function getFeeRate() : float
     {
         return $this->feeRate;
     }
@@ -267,10 +273,13 @@ class Pricer
      * @param int $targetMarkup Selling markup in percentage
      * @return self
      */
-    public function setTargetMarkup(int $targetMarkup) : self
+    public function setTargetMarkup(float $targetMarkup = null) : self
     {
         $this->targetMarkup = $targetMarkup;
-        $this->targetMarkupFactor = $this->getMarkupFactor($targetMarkup);
+        $this->targetMarkupFactor = null;
+        if (isset($targetMarkup)) {
+            $this->targetMarkupFactor = $this->getRateFactor($targetMarkup);
+        }
 
         return $this;
     }
@@ -306,7 +315,7 @@ class Pricer
 
             return $this;
         }
-        $this->alignMarkupFactor = $this->getMarkupFactor($alignMarkup);
+        $this->alignMarkupFactor = $this->getRateFactor($alignMarkup);
 
         return $this;
     }
@@ -384,6 +393,10 @@ class Pricer
      */
     protected function getTargetPrice(float $purchasePrice) : float
     {
+        if (!isset($this->targetMarkupFactor)) {
+            throw new \Exception('A target markup is required');
+        }
+
         $targetPrice = $purchasePrice * $this->targetMarkupFactor * $this->feeFactor;
         $targetPrice += $this->getShippingPrice($targetPrice);
 
