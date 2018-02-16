@@ -321,4 +321,18 @@ class PricerTest extends TestCase
         $this->assertPrice(12.50, $pricer->getWinningPrice(15.00, 10.00, 13.00));
         $this->assertPrice(12.50, $pricer->getWinningPrice(15.00, 10.00));
     }
+
+    /**
+     * Test case when a output price higher than base price is allowed
+     */
+    public function testIncreasePriceWithTargetMarkup()
+    {
+        $pricer = $this->getFeesPricer()
+        ->setNoCompetitorPolicy(Pricer::TARGET_PRICE);
+
+        $price = $pricer->getWinningPrice(24.00, 20.00);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
+        $this->assertGreaterThan(24.00, $price->value);
+    }
+
 }

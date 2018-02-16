@@ -27,7 +27,7 @@ composer install spacefoot/pricer --save
 
 ## General purpose
 
-This software library is designed to compute a better price on products using defined markups and competitors price on the same product. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
+This software library is designed to compute a better price on products using defined markups and competitors price on the same product. 
 
 Example with default options:
 
@@ -155,7 +155,7 @@ $pricer->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 Possibles values for this method are:
 
 * `Pricer::BASE_PRICE`: Output the base price.
-* `Pricer::TARGET_BELOW_BASE_PRICE`: Use the target markup to drop base price up to the target markup.
+* `Pricer::TARGET_BELOW_BASE_PRICE`: Use the target markup to drop base price up to the target markup. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
 * `Pricer::TARGET_PRICE`: Use the target markup to change the base price according to the target markup. 
 
 Default value is `Pricer::TARGET_BELOW_BASE_PRICE`
