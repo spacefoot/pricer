@@ -443,7 +443,7 @@ class Pricer
     }
 
     /**
-     * Can use competitor if competitor price - 0.01 > min price or if competitor price >= selling price x 0.9
+     * Can use competitor if competitor price - 0.01 >= min price
      * @param CompetitorPrice $competitorPrice
      * @param float $minPrice
      *
@@ -493,6 +493,7 @@ class Pricer
             round($minPrice, 2),
             isset($purchasePrice) ? WiningPrice::MIN : WiningPrice::MIN_RATED
         );
+
         return $price;
     }
 
