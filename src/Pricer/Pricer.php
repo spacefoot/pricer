@@ -423,12 +423,10 @@ class Pricer
         }
 
         foreach ($this->shippingScale as $scale) {
-            $shipping =
-                (($this->getShippingCost() * $this->getFeeFactor()) - $scale[1])
-                / $this->getFeeFactor();
+            $shipping = ($this->getShippingCost() * $this->getFeeFactor()) - $scale[1];
 
-            if ($this->feeOnShipping) {
-                $shipping *= $this->getFeeFactor();
+            if (!$this->feeOnShipping) {
+                $shipping /= $this->getFeeFactor();
             }
 
             if (!isset($scale[0])) {
