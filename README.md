@@ -104,7 +104,7 @@ $pricer->setTargetMarkup(10);
 
 ### Drop rate when purchase price is unknown
 
-If purcharse price is unknown, the target price and align price can not be computed. The pricer compute a discounted price from a base price, when a competitor is lower than the base price, the pricer compute a lower price aligned to best competitor is the limit defined by the drop rate.
+If purcharse price is unknown, the target price and align price can not be computed. The pricer compute a discounted price from a base price, when a competitor is lower than the base price, the pricer compute a lower price aligned to competitor is the limit defined by the drop rate.
 
 The default value is 10%, the `setDropRate` can be used to change the drop rate.
 
@@ -121,11 +121,10 @@ $pricer->setDropRate(10);
 
 ### Alignment to a competitor
 
-When a competitive price is within allowed price update range, the default behaviour is the output a price lower than the best competitive price by 0.01 this can be modified to increase the price drop:
-
+When a competitive price is within allowed price update range, the default behaviour is the output a price lower than the competitive price by 0.01 this can be modified to increase the price drop:
 
 ```php
-$pricer->setBestCompetitorGap(0.03);
+$pricer->setCompetitorGap(0.03);
 ```
 
 ### Other options
@@ -137,7 +136,6 @@ $pricer->setAlignMarkup(null);
 ```
 
 Disable price decrease to target price, in this case only an error message remain in the error property of the price object to indicate a base price higher than expected:
-
 
 ```php
 $pricer->setDecreaseToTarget(false);
