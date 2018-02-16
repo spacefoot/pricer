@@ -61,7 +61,7 @@ Contain an exception if sellingPrice is higher than target price or lower than a
 
 __Align markup__: This is the markup on selling price in percentage used to compute the lower limit of a price aligned to competitor price.
 
-The default value is null, alignement to competitor is disabled.
+The default value is null, alignment to competitor is disabled.
 
 __Target markup__: This is the markup on selling price in percentage used to compute the price when there is no competitor.
 
@@ -98,7 +98,7 @@ $pricer->setDropRate(10);
 |      10.00 |              8.91 |          9.00 |
 
 
-### Alignement to a competitor
+### Alignment to a competitor
 
 When a competitive price is within allowed price update range, the default behaviour is the output a price lower than the best competitive price by 0.01 this can be modified to increase the price drop:
 
@@ -109,7 +109,7 @@ $pricer->setBestCompetitorGap(0.03);
 
 ### Other options
 
-Disable competitor aligment, this is the default behaviour:
+Disable competitor aligment, this is the default behavior:
 
 ```php
 $pricer->setAlignMarkup(null);
@@ -131,7 +131,7 @@ default value is true
 ### Set the shipping cost base (real cost of your shipping)
 
 The shipping cost is the real cost of the shipping.
-The computed shipping price can be different thant the shipping cost. 
+The computed shipping price can be different than the shipping cost. 
 
 ```php
 $pricer->setShippingCost(5.99);
