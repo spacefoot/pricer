@@ -2,6 +2,27 @@
 
 The pricer is a tool used to compute a discounted price according to different parameters.
 
+## Install library
+
+This a composer library, not registered in packagist, first add the repository in your composer.json:
+
+
+```json
+"repositories": [
+    {
+        "type": "git",
+        "url": "https://github.com/spacefoot/pricer.git"
+    }
+],
+
+```
+
+Then install:
+
+```php
+composer install spacefoot/pricer --save
+```
+
 ## General purpose
 
 This software library is designed to compute a better price on products using defined markups and competitors price on the same product. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.

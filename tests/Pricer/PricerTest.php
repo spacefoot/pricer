@@ -158,6 +158,18 @@ class PricerTest extends TestCase
         $this->assertPrice(35.00, $price);
     }
 
+
+    public function testCompetitorGap()
+    {
+        $pricer = $this->getFeesPricer();
+        $pricer->setCompetitorGap(0.02);
+
+        $price = $pricer->getProductPrice(35.00, null, $this->getCompetitor(34.99));
+        $this->assertEquals(ProductPrice::COMPETITOR, $price->type);
+        $this->assertPrice(34.97, $price);
+    }
+
+
     /**
      * < 10%
      */

@@ -74,10 +74,10 @@ class Pricer
     protected $feeFactor = 1;
 
     /**
-     * Gap with best competitor in euro when we set a lower price
+     * Gap with competitor in euro when we set a lower price
      * @var float
      */
-    protected $bestCompetitorGap = 0.01;
+    protected $competitorGap = 0.01;
 
     /**
      * Get factor from selling markup (taux de marque)
@@ -126,9 +126,9 @@ class Pricer
      * @param float $amount Euros
      * @return self
      */
-    public function setBestCompetitorGap(float $amount) : self
+    public function setCompetitorGap(float $amount) : self
     {
-        $this->bestCompetitorGap = $amount;
+        $this->competitorGap = $amount;
 
         return $this;
     }
@@ -139,7 +139,7 @@ class Pricer
      */
     public function getBestCompetitorGap() : float
     {
-        return $this->bestCompetitorGap;
+        return $this->competitorGap;
     }
 
     /**
@@ -398,7 +398,7 @@ class Pricer
      */
     protected function canUseCompetitor(Competitor $competitor, float $minPrice) : bool
     {
-        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->bestCompetitorGap));
+        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->competitorGap));
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
@@ -459,7 +459,7 @@ class Pricer
 
             if ($this->canUseCompetitor($competitor, $minPrice)) {
                 $price->setSellingPriceDown(
-                    round($competitor->sellingPrice - $this->bestCompetitorGap, 2),
+                    round($competitor->sellingPrice - $this->competitorGap, 2),
                     ProductPrice::COMPETITOR
                 );
             } else {
