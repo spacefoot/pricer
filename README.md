@@ -1,5 +1,7 @@
 # pricer
 
+[![Build Status](https://travis-ci.org/spacefoot/pricer.svg?branch=master)](https://travis-ci.org/spacefoot/pricer)
+
 The pricer is a tool used to compute a discounted price according to different parameters.
 
 ## Install library
