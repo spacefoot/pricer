@@ -46,8 +46,8 @@ Contain one of the following possible type
 |--------------------------|--------------------------------|
 | ProductPrice::BASE       | Unmodified base price          |
 | ProductPrice::COMPETITOR | Aligned to competitor          |
-| ProductPrice::MIN        | Minimal selling markup         |
-| ProductPrice::TARGET     | Target selling markup          |
+| ProductPrice::MIN        | Limited by align markup        |
+| ProductPrice::TARGET     | Limited by target markup       |
 | ProductPrice::MIN_RATED  | Max price drop from base price |
 
 ### error
