@@ -43,10 +43,10 @@ $pricer->getWiningPrice($basePrice, $purchasePrice);
 // return a WiningPrice object with 14.29
 
 // with a competitor
-$competitor = new CompetitorPrice(10.90);
+$competitor = new CompetitorPrice(11.90);
 $competitor->name = 'Seller name';
 $pricer->getWiningPrice($basePrice, $purchasePrice, $competitor);
-// return a WiningPrice object with 11.76
+// return a WiningPrice object with 11.89
 
 ```
 

@@ -17,7 +17,8 @@ class CompetitorPrice
     public $name;
 
 
-    public function __construct(float $price) {
+    public function __construct(float $price)
+    {
         $this->sellingPrice = $price;
     }
 }
