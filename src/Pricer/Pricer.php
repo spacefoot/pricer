@@ -73,10 +73,11 @@ class Pricer
     }
 
     /**
+     * set fee selling rate
      * @param float $fee       Fee percentage
      * @return self
      */
-    public function setFeeSellingRate(int $fee) : self
+    public function setFeeRate(int $fee) : self
     {
         $this->feeFactor = $this->getMarkupFactor($fee);
 
@@ -124,13 +125,22 @@ class Pricer
     }
 
     /**
+     * Get shipping scale array
+     * @return array
+     */
+    public function getShippingScale() : array
+    {
+        return $this->shippingScale;
+    }
+
+    /**
      * Enable/Disable fees on shipping cost
-     * @param boolean $shippingFee
+     * @param boolean $feeOnShipping
      * @return self
      */
-    public function setFeeOnShipping(bool $shippingFee) : self
+    public function setFeeOnShipping(bool $feeOnShipping) : self
     {
-        $this->feeOnShipping = $shippingFee;
+        $this->feeOnShipping = $feeOnShipping;
 
         return $this;
     }

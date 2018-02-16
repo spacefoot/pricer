@@ -26,7 +26,7 @@ class PricerTest extends TestCase
     {
         $pricer = new Pricer();
 
-        $pricer->setFeeSellingRate(15)
+        $pricer->setFeeRate(15)
             ->setShippingCost(5.99)
             ->setShippingScale(
                 [
@@ -292,8 +292,8 @@ class PricerTest extends TestCase
 
     public function testfeesUpdate()
     {
-        $pricer15 = $this->getFeesPricer()->setFeeSellingRate(15);
-        $pricer16 = $this->getFeesPricer()->setFeeSellingRate(16);
+        $pricer15 = $this->getFeesPricer()->setFeeRate(15);
+        $pricer16 = $this->getFeesPricer()->setFeeRate(16);
 
         $price15 = $pricer15->setFeeOnShipping(false)->getProductPrice(14.00, 6.00);
         $price15s = $pricer15->setFeeOnShipping(true)->getProductPrice(14.00, 6.00);
