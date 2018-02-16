@@ -8,8 +8,8 @@ class ProductPrice
 {
     const BASE          = 'Unmodified base price';
     const COMPETITOR    = 'Aligned to competitor';
-    const MIN           = 'Minimal selling markup';
-    const TARGET        = 'Target selling markup';
+    const MIN           = 'Limited by align markup';
+    const TARGET        = 'Limited by target markup';
     const MIN_RATED     = 'Max price drop from base price';
 
 

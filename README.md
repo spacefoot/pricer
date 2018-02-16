@@ -8,26 +8,25 @@ This software library is designed to compute a better price on products using de
 
 Example with default options:
 
-
-TODO: add result price
-
 ```php
 use Pricer\Pricer;
 
 $pricer = new Pricer();
+$pricer->setTargetMarkup(30);
+$pricer->setAlignMarkup(15);
 
 $basePrice = 14.80;
 $purchasePrice = 10.00;
 
 $pricer->getProductPrice($basePrice, $purchasePrice);
-// return a ProductPrice object
+// return a ProductPrice object with 14.29
 
 // with a competitor
 $competitor = new Competitor();
 $competitor->sellingPrice = 10.90;
 $competitor->name = 'Seller name';
 $pricer->getProductPrice($basePrice, $purchasePrice, $competitor);
-// return a ProductPrice object
+// return a ProductPrice object with 11.76
 
 ```
 
