@@ -307,12 +307,11 @@ class Pricer
      * @param int $alignMarkup margin rate %
      * @return self
      */
-    public function setAlignMarkup(int $alignMarkup = null) : self
+    public function setAlignMarkup(float $alignMarkup = null) : self
     {
         $this->alignMarkup = $alignMarkup;
         if (!isset($alignMarkup)) {
             $this->alignMarkupFactor = null;
-
             return $this;
         }
         $this->alignMarkupFactor = $this->getRateFactor($alignMarkup);

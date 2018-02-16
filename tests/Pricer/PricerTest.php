@@ -355,15 +355,33 @@ class PricerTest extends TestCase
         $pricer1 = new Pricer();
         $pricer2 = new Pricer();
 
-        $pricer1->setTargetMarkup(20.10);
-        $pricer2->setTargetMarkup(20.90);
+        $pricer1->setTargetMarkup(20.1);
+        $pricer2->setTargetMarkup(20.9);
 
         $p1 = $pricer1->getWinningPrice($basePrice, $purchasePrice);
         $p2 = $pricer2->getWinningPrice($basePrice, $purchasePrice);
 
         $this->assertGreaterThan($p1->value, $p2->value);
-
     }
+
+    public function testFloatAlignMarkup()
+    {
+        $basePrice = 900000.00;
+        $purchasePrice = 500000.00;
+        $competitorPrice = 310000.00;
+
+        $pricer1 = new Pricer();
+        $pricer2 = new Pricer();
+
+        $pricer1->setTargetMarkup(20.00)->setAlignMarkup(15.6);
+        $pricer2->setTargetMarkup(20.00)->setAlignMarkup(15.9);
+
+        $p1 = $pricer1->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $p2 = $pricer2->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+
+        $this->assertGreaterThan($p1->value, $p2->value);
+    }
+
 
     public function testFloatFeeRate()
     {
