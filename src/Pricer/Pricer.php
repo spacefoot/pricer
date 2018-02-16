@@ -134,10 +134,10 @@ class Pricer
     }
 
     /**
-     * Gap between best competitve price and pricer output
+     * Gap between competitve price and pricer output
      * @return float
      */
-    public function getBestCompetitorGap() : float
+    public function getCompetitorGap() : float
     {
         return $this->competitorGap;
     }
@@ -398,7 +398,7 @@ class Pricer
      */
     protected function canUseCompetitor(Competitor $competitor, float $minPrice) : bool
     {
-        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->competitorGap));
+        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->getCompetitorGap()));
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
