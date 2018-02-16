@@ -31,11 +31,23 @@ class Pricer
     protected $decreaseToTarget = true;
 
     /**
+     * Align selling markup percentage, can be null
+     * @var int | null
+     */
+    protected $alignMarkup = null;
+
+    /**
      * factor to obtain the minimal selling price from purchase price
      * if null, disable alignement to competitor price
      * @var float
      */
-    protected $alignMarkupFactor = 1;
+    protected $alignMarkupFactor = null;
+
+    /**
+     * target selling markup percentage
+     * @var int
+     */
+    protected $targetMarkup = 0;
 
     /**
      * factor to obtain the desired selling price from purchase price
@@ -44,7 +56,13 @@ class Pricer
     protected $targetMarkupFactor = 1;
 
     /**
-     * Drop factor on price for products without competitor (10% allowed)
+     * Drop rate percentage, for products without purchase price
+     * @var integer
+     */
+    protected $dropRate = 10;
+
+    /**
+     * Drop factor on price for products without purchase price
      * @var float
      */
     protected $dropRateFactor = 0.9;
@@ -79,11 +97,25 @@ class Pricer
      */
     public function setFeeRate(int $fee) : self
     {
+        $this->feeRate = $fee;
         $this->feeFactor = $this->getMarkupFactor($fee);
 
         return $this;
     }
 
+    /**
+     * Get fee selling rate
+     * @return int
+     */
+    public function getFeeRate() : int
+    {
+        return $this->feeRate;
+    }
+
+    /**
+     * Get fee factor
+     * @return float
+     */
     public function getFeeFactor() : float
     {
         return $this->feeFactor;
@@ -146,6 +178,15 @@ class Pricer
     }
 
     /**
+     * Get status for fees on shipping cost
+     * @return bool
+     */
+    public function getFeeOnShipping() : bool
+    {
+        return $this->feeOnShipping;
+    }
+
+    /**
      * Enable/Disable always decrease to target price if price is higher than target selling markup
      * @param boolean $decrease
      * @return self
@@ -158,15 +199,34 @@ class Pricer
     }
 
     /**
+     * Test if pricer decrease output price to target selling rate
+     * @return bool
+     */
+    public function getDecreaseToTarget() : bool
+    {
+        return $this->decreaseToTarget;
+    }
+
+    /**
      * Set desired selling markup if no competitors
-     * @param int $targetMargin Selling markup in percentage
+     * @param int $targetMarkup Selling markup in percentage
      * @return self
      */
-    public function setTargetMarkup(int $targetMargin) : self
+    public function setTargetMarkup(int $targetMarkup) : self
     {
-        $this->targetMarkupFactor = $this->getMarkupFactor($targetMargin);
+        $this->targetMarkup = $targetMarkup;
+        $this->targetMarkupFactor = $this->getMarkupFactor($targetMarkup);
 
         return $this;
+    }
+
+    /**
+     * Get desired selling markup if no competitors
+     * @return int
+     */
+    public function getTargetMarkup() : int
+    {
+        return $this->targetMarkup;
     }
 
     /**
@@ -180,19 +240,29 @@ class Pricer
 
     /**
      * Set minimal selling markup if competitors
-     * @param int $minMargin margin rate %
+     * @param int $alignMarkup margin rate %
      * @return self
      */
-    public function setAlignMarkup(int $minMargin = null) : self
+    public function setAlignMarkup(int $alignMarkup = null) : self
     {
-        if (!isset($minMargin)) {
+        $this->alignMarkup = $alignMarkup;
+        if (!isset($alignMarkup)) {
             $this->alignMarkupFactor = null;
 
             return $this;
         }
-        $this->alignMarkupFactor = $this->getMarkupFactor($minMargin);
+        $this->alignMarkupFactor = $this->getMarkupFactor($alignMarkup);
 
         return $this;
+    }
+
+    /**
+     * Get align markup, selling markup percentage
+     * @return int
+     */
+    public function getAlignMarkup() : int
+    {
+        return $this->alignMarkup;
     }
 
     /**
@@ -205,15 +275,25 @@ class Pricer
     }
 
     /**
-     * Allowed drop rate on price for products without competitor
+     * Allowed drop rate on price for products without purchase price
      * @param int $rate
      * @return self
      */
     public function setDropRate(int $rate) : self
     {
+        $this->dropRate = $rate;
         $this->dropRateFactor = (100-$rate)/100;
 
         return $this;
+    }
+
+    /**
+     * Get allowed drop rate on price for products without purchase price
+     * @return int
+     */
+    public function getDropRate() : int
+    {
+        return $this->dropRate;
     }
 
     /**

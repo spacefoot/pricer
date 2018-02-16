@@ -8,6 +8,9 @@ This software library is designed to compute a better price on products using de
 
 Example with default options:
 
+
+TODO: add result price
+
 ```php
 use Pricer\Pricer;
 
