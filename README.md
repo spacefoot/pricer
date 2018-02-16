@@ -168,7 +168,6 @@ Apply fees on pricer output with a fee rate on percentage:
 
 ```php
 $pricer->setFeeRate(10);
-
 ```
 
 
@@ -176,5 +175,4 @@ To disable fees on shipping cost, the setShippingFee method can be used:
 
 ```php
 $pricer->setFeeOnShipping(false);
-
 ```
