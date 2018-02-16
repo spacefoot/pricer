@@ -282,7 +282,7 @@ class PricerTest extends TestCase
     }
 
 
-    public function testShippingCostGreaterThanBasePrice()
+    public function testPurchasePriceGreaterThanBasePrice()
     {
         $pricer = $this->getFeesPricer()
             ->setAlignMarkup(10)

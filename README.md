@@ -55,25 +55,21 @@ $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
 
 The pricer output a `WinningPrice` object with properties:
 
-### sellingPrice
+### value
 
-Pricer output to use  as a discounted price
+Pricer output to use as a discounted price
 
 ### type
 
 Contain one of the following possible type
 
-| Constant                | type value                     |
-|-------------------------|--------------------------------|
+| Constant                 | type value                     |
+|----------------------- --|--------------------------------|
 | WinningPrice::BASE       | Unmodified base price          |
 | WinningPrice::COMPETITOR | Aligned to competitor          |
 | WinningPrice::MIN        | Limited by align markup        |
 | WinningPrice::TARGET     | Limited by target markup       |
 | WinningPrice::MIN_RATED  | Max price drop from base price |
-
-### error
-
-Contain an exception if `sellingPrice` is higher than target price or lower than align price 
 
 
 ## price calculation
