@@ -1,7 +1,7 @@
 <?php
 namespace Pricer;
 
-class Competitor
+class CompetitorPrice
 {
     /**
      * Competitor selling price, including taxes
@@ -15,4 +15,9 @@ class Competitor
      * @var string
      */
     public $name;
+
+
+    public function __construct(float $price) {
+        $this->sellingPrice = $price;
+    }
 }

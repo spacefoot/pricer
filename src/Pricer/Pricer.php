@@ -391,31 +391,31 @@ class Pricer
 
     /**
      * Can use competitor if competitor price - 0.01 > min price or if competitor price >= selling price x 0.9
-     * @param Competitor $competitor
+     * @param CompetitorPrice $competitorPrice
      * @param float $minPrice
      *
      * @return bool
      */
-    protected function canUseCompetitor(Competitor $competitor, float $minPrice) : bool
+    protected function canUseCompetitor(CompetitorPrice $competitorPrice, float $minPrice) : bool
     {
-        $estimatedCents = (int) round(100 * ($competitor->sellingPrice - $this->getCompetitorGap()));
+        $estimatedCents = (int) round(100 * ($competitorPrice->sellingPrice - $this->getCompetitorGap()));
 
         return ($estimatedCents >= (int) round(100 * $minPrice));
     }
 
     /**
      * Lower price to target price if necessary, check price validity
-     * @param ProductPrice $price
+     * @param WiningPrice $price
      * @param float $minPrice
      * @param float $targetPrice
      * @throws UnexpectedPriceException
      */
-    protected function normalizePrice(ProductPrice $price, float $minPrice, float $targetPrice = null)
+    protected function normalizePrice(WiningPrice $price, float $minPrice, float $targetPrice = null)
     {
         if (isset($targetPrice)) {
             if ($this->decreaseToTarget) {
                 // If the price remain higher than target price, normalize
-                $price->setSellingPriceDown($targetPrice, ProductPrice::TARGET);
+                $price->setSellingPriceDown($targetPrice, WiningPrice::TARGET);
             } elseif ($price->sellingPrice > $targetPrice) {
                 throw new UnexpectedPriceException(
                     sprintf('Current selling price %f higher than target price %f', $price->sellingPrice, $targetPrice)
@@ -431,19 +431,19 @@ class Pricer
     }
 
     /**
-     * Compute a product price
+     * Compute a wining price
      *
      * @param float         $basePrice              Store 0 price, never modified by the pricer
      * @param float         $purchasePrice          Can be null
-     * @param Competitor    $competitor             Can be null
+     * @param CompetitorPrice    $competitor             Can be null
      *
-     * @return ProductPrice
+     * @return WiningPrice
      */
-    public function getProductPrice(float $basePrice, float $purchasePrice = null, Competitor $competitor = null) : ProductPrice
+    public function getWiningPrice(float $basePrice, float $purchasePrice = null, CompetitorPrice $competitor = null) : WiningPrice
     {
-        $price = new ProductPrice();
+        $price = new WiningPrice();
         $price->sellingPrice = $basePrice;
-        $price->type = ProductPrice::BASE;
+        $price->type = WiningPrice::BASE;
 
         $targetPrice = null;
         $minPrice = $basePrice * $this->dropRateFactor;
@@ -460,12 +460,12 @@ class Pricer
             if ($this->canUseCompetitor($competitor, $minPrice)) {
                 $price->setSellingPriceDown(
                     round($competitor->sellingPrice - $this->competitorGap, 2),
-                    ProductPrice::COMPETITOR
+                    WiningPrice::COMPETITOR
                 );
             } else {
                 $price->setSellingPriceDown(
                     round($minPrice, 2),
-                    isset($purchasePrice) ? ProductPrice::MIN : ProductPrice::MIN_RATED
+                    isset($purchasePrice) ? WiningPrice::MIN : WiningPrice::MIN_RATED
                 );
             }
         }

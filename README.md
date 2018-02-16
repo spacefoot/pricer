@@ -39,21 +39,20 @@ $pricer->setAlignMarkup(15);
 $basePrice = 14.80;
 $purchasePrice = 10.00;
 
-$pricer->getProductPrice($basePrice, $purchasePrice);
-// return a ProductPrice object with 14.29
+$pricer->getWiningPrice($basePrice, $purchasePrice);
+// return a WiningPrice object with 14.29
 
 // with a competitor
-$competitor = new Competitor();
-$competitor->sellingPrice = 10.90;
+$competitor = new CompetitorPrice(10.90);
 $competitor->name = 'Seller name';
-$pricer->getProductPrice($basePrice, $purchasePrice, $competitor);
-// return a ProductPrice object with 11.76
+$pricer->getWiningPrice($basePrice, $purchasePrice, $competitor);
+// return a WiningPrice object with 11.76
 
 ```
 
 ## Output price
 
-The pricer output a `ProductPrice` object with properties:
+The pricer output a `WiningPrice` object with properties:
 
 ### sellingPrice
 
@@ -65,11 +64,11 @@ Contain one of the following possible type
 
 | Constant                 | type value                     |
 |--------------------------|--------------------------------|
-| ProductPrice::BASE       | Unmodified base price          |
-| ProductPrice::COMPETITOR | Aligned to competitor          |
-| ProductPrice::MIN        | Limited by align markup        |
-| ProductPrice::TARGET     | Limited by target markup       |
-| ProductPrice::MIN_RATED  | Max price drop from base price |
+| WiningPrice::BASE       | Unmodified base price          |
+| WiningPrice::COMPETITOR | Aligned to competitor          |
+| WiningPrice::MIN        | Limited by align markup        |
+| WiningPrice::TARGET     | Limited by target markup       |
+| WiningPrice::MIN_RATED  | Max price drop from base price |
 
 ### error
 
@@ -127,21 +126,46 @@ When a competitive price is within allowed price update range, the default behav
 $pricer->setCompetitorGap(0.03);
 ```
 
-### Other options
+### Competitor policies
 
-Disable competitor aligment, this is the default behavior:
+#### If there is a competitor
 
-```php
-$pricer->setAlignMarkup(null);
-```
-
-Disable price decrease to target price, in this case only an error message remain in the error property of the price object to indicate a base price higher than expected:
+Disable competitor aligment:
 
 ```php
-$pricer->setDecreaseToTarget(false);
+$pricer->setCompetitorPolicy(Pricer::NO_ALIGN);
+```
+Possibles values for this method are:
+
+`Pricer::ALIGN`: Drop the price if the competitor price is lower than base price.
+
+If the competitor alignement is enabled, the pricer will apply a price drop to align to competitor in two cases:
+
+* there is no purchase price, and the price drop rate is greater than zero.
+* there is a purchase price, if the align rate is not set, the pricer throw an exception.
+
+`Pricer::NO_ALIGN`: Do not drop price if the competitor have a lower price
+
+
+#### If there is no competitor
+
+Disable price decrease to target price:
+
+```php
+$pricer->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 ```
 
-default value is true
+Possibles values for this method are:
+
+* `Pricer::BASE_PRICE`: Output the base price.
+* `Pricer::TARGET_BELOW_BASE_PRICE`: Use the target markup to drop base price up to the target markup.
+* `Pricer::TARGET_PRICE`: Use the target markup to change the base price according to the target markup. 
+
+Default value is `Pricer::TARGET_BELOW_BASE_PRICE`
+
+for `Pricer::TARGET_BELOW_BASE_PRICE` and `Pricer::TARGET_PRICE`, the purchase price will be used, if the pucharse price is not set, the pricer fallback on `Pricer::BASE_PRICE`.
+
+If target markup is not defined with `setTargetMarkup`, the pricer will output the purchase price because default target markup is 0.
 
 
 ## Shipping price/Shipping cost
