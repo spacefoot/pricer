@@ -89,8 +89,6 @@ class PricerTest extends TestCase
         $pricer = $this->getNoshippingPricer();
 
         $price = $pricer->getWinningPrice(19.35, 8.00, 10.90);
-
-        $this->assertTrue(isset($price->competitorPrice));
         $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(10.89, $price);
     }
@@ -100,8 +98,6 @@ class PricerTest extends TestCase
         $pricer = $this->getNoshippingPricer();
 
         $price = $pricer->getWinningPrice(19.35, 8.00, 12.90);
-
-        $this->assertTrue(isset($price->competitorPrice));
         $this->assertEquals(WinningPrice::TARGET, $price->type);
         $this->assertPrice(11.43, $price);
     }

@@ -26,12 +26,6 @@ class WinningPrice
      */
     public $type;
 
-    /**
-     * If margin lower than targetMargin, contain the competitor
-     * @var float
-     */
-    public $competitorPrice = null;
-
 
     /**
      * Set the selling price only if the new value is lower than current value

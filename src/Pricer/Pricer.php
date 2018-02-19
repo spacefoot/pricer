@@ -482,7 +482,6 @@ class Pricer
         $price = new WinningPrice();
         $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
-        $price->competitorPrice = $competitorPrice;
 
         if (isset($targetPrice) && $competitorPrice > $targetPrice) {
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
