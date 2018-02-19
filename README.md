@@ -136,7 +136,7 @@ Possibles values for this method are:
 
 `Pricer::ALIGN`: Drop the price if the competitor price is lower than base price.
 
-If the competitor alignement is enabled, the pricer will apply a price drop to align to competitor in two cases:
+If the competitor alignment is enabled, the pricer will apply a price drop to align to competitor in two cases:
 
 * there is no purchase price, and the price drop rate is greater than zero.
 * there is a purchase price, if the align rate is not set, the pricer throw an exception.
