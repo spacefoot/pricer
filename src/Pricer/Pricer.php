@@ -269,7 +269,7 @@ class Pricer
     }
 
     /**
-     * Set desired selling markup if no competitors
+     * Set desired selling markup
      * @param int $targetMarkup Selling markup in percentage
      * @return self
      */
@@ -285,7 +285,7 @@ class Pricer
     }
 
     /**
-     * Get desired selling markup if no competitors
+     * Get desired selling markup
      * @return int
      */
     public function getTargetMarkup() : int
@@ -339,10 +339,10 @@ class Pricer
 
     /**
      * Allowed drop rate on price for products without purchase price
-     * @param int $rate
+     * @param float $rate
      * @return self
      */
-    public function setDropRate(int $rate) : self
+    public function setDropRate(float $rate) : self
     {
         $this->dropRate = $rate;
         $this->dropRateFactor = (100-$rate)/100;
@@ -354,7 +354,7 @@ class Pricer
      * Get allowed drop rate on price for products without purchase price
      * @return int
      */
-    public function getDropRate() : int
+    public function getDropRate() : float
     {
         return $this->dropRate;
     }
@@ -424,7 +424,7 @@ class Pricer
     }
 
     /**
-     * Get computed shipping cost
+     * Get computed shipping price
      * @throws \Exception
      * @param float $sellingPrice   A selling price with all fees included except shipping
      */
@@ -539,9 +539,9 @@ class Pricer
 
 
     /**
-     * Compute a wining price
+     * Compute a winning price
      *
-     * @param float     $basePrice              Store 0 price, never modified by the pricer
+     * @param float     $basePrice              base price, never modified by the pricer
      * @param float     $purchasePrice          Can be null
      * @param float     $competitorPrice        Can be null
      *
