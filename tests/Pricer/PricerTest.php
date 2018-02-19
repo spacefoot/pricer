@@ -104,7 +104,7 @@ class PricerTest extends TestCase
 
     public function testShippingCompetitorLessThanMin()
     {
-        // shipping + fees = lower than min markup
+        // shipping + fees = lower than align markup
         $pricer = $this->getFeesPricer();
 
         $price = $pricer->getWinningPrice(19.35, 8.00, 10.90);
@@ -218,7 +218,6 @@ class PricerTest extends TestCase
     public function testDecreaseToTargetDisabled()
     {
         $pricer = $this->getFeesPricer()
-            ->setAlignMarkup(null)
             ->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 
         $price = $pricer->getWinningPrice(35.00, 6.00);
@@ -233,9 +232,23 @@ class PricerTest extends TestCase
     public function testForceMarkupOnPurchasePrice()
     {
         $pricer = $this->getNoshippingPricer()
-            ->setAlignMarkup(10)
             ->setTargetMarkup(10);
         $price = $pricer->getWinningPrice(35.00, 9.00);
+
+        $this->assertPrice(10.00, $price);
+        $this->assertEquals(WinningPrice::TARGET, $price->type);
+    }
+
+
+    /**
+     * Force a markup, disable alignement
+     */
+    public function testForceMarkupWithCompetitor()
+    {
+        $pricer = $this->getNoshippingPricer()
+            ->setCompetitorPolicy(Pricer::NO_ALIGN)
+            ->setTargetMarkup(10);
+        $price = $pricer->getWinningPrice(35.00, 9.00, 9.99);
 
         $this->assertPrice(10.00, $price);
         $this->assertEquals(WinningPrice::TARGET, $price->type);
@@ -249,7 +262,6 @@ class PricerTest extends TestCase
     public function testForceMarkupWithNoPurchasePrice()
     {
         $pricer = $this->getNoshippingPricer()
-            ->setAlignMarkup(10)
             ->setTargetMarkup(10);
         $price = $pricer->getWinningPrice(35.00);
 
@@ -261,7 +273,6 @@ class PricerTest extends TestCase
     public function testForceMarkupWithFees()
     {
         $pricer = $this->getFeesPricer()
-            ->setAlignMarkup(10)
             ->setTargetMarkup(10);
         $price = $pricer->getWinningPrice(11.00, 7.00);
 

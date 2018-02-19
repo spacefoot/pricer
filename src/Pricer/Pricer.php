@@ -483,6 +483,13 @@ class Pricer
         $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
 
+        if (self::NO_ALIGN === $this->competitorPolicy) {
+            if (isset($targetPrice)) {
+                $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
+            }
+            return $price;
+        }
+
         if (isset($targetPrice) && $competitorPrice > $targetPrice) {
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
             return $price;
