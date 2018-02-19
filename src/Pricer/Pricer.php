@@ -521,7 +521,6 @@ class Pricer
         $price->value = $basePrice;
         $price->type = WinningPrice::BASE;
 
-
         if (!isset($targetPrice)) {
             return $price;
         }
@@ -551,10 +550,6 @@ class Pricer
      */
     public function getWinningPrice(float $basePrice, float $purchasePrice = null, float $competitorPrice = null) : WinningPrice
     {
-        $price = new WinningPrice();
-        $price->value = $basePrice;
-        $price->type = WinningPrice::BASE;
-
         $targetPrice = null;
         $minPrice = $basePrice * $this->dropRateFactor;
 
