@@ -1,56 +1,64 @@
 <?php
+
 namespace Pricer;
 
 /**
- * Generic pricer without database connexion
+ * Generic pricer without database connexion.
  */
 class Pricer
 {
     /**
-     * competitor policy, do not align to competitor price
-     * @var integer
+     * competitor policy, do not align to competitor price.
+     *
+     * @var int
      */
     const NO_ALIGN = 0;
 
     /**
-     * competitor policy, align to competito price
-     * @var integer
+     * competitor policy, align to competito price.
+     *
+     * @var int
      */
     const ALIGN = 1;
 
     /**
-     * No competitor policy, return base price
-     * @var integer
+     * No competitor policy, return base price.
+     *
+     * @var int
      */
     const BASE_PRICE = 0;
 
     /**
-     * No competitor policy, always decrease to target price if price is higher than target selling markup
-     * @var integer
+     * No competitor policy, always decrease to target price if price is higher than target selling markup.
+     *
+     * @var int
      */
     const TARGET_BELOW_BASE_PRICE = 1;
 
     /**
-     * No competitor policy, always change price to target price
-     * @var integer
+     * No competitor policy, always change price to target price.
+     *
+     * @var int
      */
     const TARGET_PRICE = 2;
 
-
     /**
-     * Real cost of shipping for the seller
+     * Real cost of shipping for the seller.
+     *
      * @var float
      */
     protected $shippingCost = 0.0;
 
     /**
-     * Shipping scale used to ccompute shipping cost
+     * Shipping scale used to ccompute shipping cost.
+     *
      * @var array
      */
     protected $shippingScale = [];
 
     /**
-     * Use fee on shipping cost
+     * Use fee on shipping cost.
+     *
      * @var bool
      */
     protected $feeOnShipping = false;
@@ -66,77 +74,90 @@ class Pricer
     protected $noCompetitorPolicy = self::TARGET_BELOW_BASE_PRICE;
 
     /**
-     * Align selling markup percentage, can be null
+     * Align selling markup percentage, can be null.
+     *
      * @var float
      */
     protected $alignMarkup = null;
 
     /**
      * factor to obtain the minimal selling price from purchase price
-     * if null, disable alignement to competitor price
+     * if null, disable alignement to competitor price.
+     *
      * @var float
      */
     protected $alignMarkupFactor = null;
 
     /**
-     * target selling markup percentage
+     * target selling markup percentage.
+     *
      * @var float
      */
     protected $targetMarkup = null;
 
     /**
-     * factor to obtain the desired selling price from purchase price
+     * factor to obtain the desired selling price from purchase price.
+     *
      * @var float
      */
     protected $targetMarkupFactor = null;
 
     /**
-     * Drop rate percentage, for products without purchase price
+     * Drop rate percentage, for products without purchase price.
+     *
      * @var float
      */
     protected $dropRate = 10;
 
     /**
-     * Drop factor on price for products without purchase price
+     * Drop factor on price for products without purchase price.
+     *
      * @var float
      */
     protected $dropRateFactor = 0.9;
 
     /**
-     * Fee rate
+     * Fee rate.
+     *
      * @var float
      */
     protected $feeRate = 0.0;
 
     /**
-     * fee factor if fees are used on selling price
+     * fee factor if fees are used on selling price.
+     *
      * @var float
      */
     protected $feeFactor = 1;
 
     /**
-     * Gap with competitor in euro when we set a lower price
+     * Gap with competitor in euro when we set a lower price.
+     *
      * @var float
      */
     protected $competitorGap = 0.01;
 
     /**
      * Get factor from selling markup (taux de marque)
-     * to apply on purchase price
+     * to apply on purchase price.
+     *
      * @param float $rate
+     *
      * @return float
      */
-    private function getRateFactor(float $rate) : float
+    private function getRateFactor(float $rate): float
     {
-        return 100/(100-$rate);
+        return 100 / (100 - $rate);
     }
 
     /**
-     * set fee selling rate
-     * @param float $fee       Fee percentage
+     * set fee selling rate.
+     *
+     * @param float $fee Fee percentage
+     *
      * @return self
      */
-    public function setFeeRate(float $fee) : self
+    public function setFeeRate(float $fee): self
     {
         $this->feeRate = $fee;
         $this->feeFactor = $this->getRateFactor($fee);
@@ -145,29 +166,33 @@ class Pricer
     }
 
     /**
-     * Get fee selling rate
+     * Get fee selling rate.
+     *
      * @return float
      */
-    public function getFeeRate() : float
+    public function getFeeRate(): float
     {
         return $this->feeRate;
     }
 
     /**
-     * Get fee factor
+     * Get fee factor.
+     *
      * @return float
      */
-    protected function getFeeFactor() : float
+    protected function getFeeFactor(): float
     {
         return $this->feeFactor;
     }
 
     /**
-     * Optional config, default is 0.01
+     * Optional config, default is 0.01.
+     *
      * @param float $amount Euros
+     *
      * @return self
      */
-    public function setCompetitorGap(float $amount) : self
+    public function setCompetitorGap(float $amount): self
     {
         $this->competitorGap = $amount;
 
@@ -175,10 +200,11 @@ class Pricer
     }
 
     /**
-     * Gap between competitve price and pricer output
+     * Gap between competitve price and pricer output.
+     *
      * @return float
      */
-    public function getCompetitorGap() : float
+    public function getCompetitorGap(): float
     {
         return $this->competitorGap;
     }
@@ -186,11 +212,13 @@ class Pricer
     /**
      * Set shipping object used to compute shipping cost
      * First value is the upper limit to compare with total selling price
-     * Second value is the amount of shipping
+     * Second value is the amount of shipping.
+     *
      * @param array $shippingScale
+     *
      * @return self
      */
-    public function setShippingScale(array $shippingScale) : self
+    public function setShippingScale(array $shippingScale): self
     {
         $this->shippingScale = $shippingScale;
 
@@ -198,20 +226,23 @@ class Pricer
     }
 
     /**
-     * Get shipping scale array
+     * Get shipping scale array.
+     *
      * @return array
      */
-    public function getShippingScale() : array
+    public function getShippingScale(): array
     {
         return $this->shippingScale;
     }
 
     /**
-     * Enable/Disable fees on shipping cost
-     * @param boolean $feeOnShipping
+     * Enable/Disable fees on shipping cost.
+     *
+     * @param bool $feeOnShipping
+     *
      * @return self
      */
-    public function setFeeOnShipping(bool $feeOnShipping) : self
+    public function setFeeOnShipping(bool $feeOnShipping): self
     {
         $this->feeOnShipping = $feeOnShipping;
 
@@ -219,20 +250,23 @@ class Pricer
     }
 
     /**
-     * Get status for fees on shipping cost
+     * Get status for fees on shipping cost.
+     *
      * @return bool
      */
-    public function getFeeOnShipping() : bool
+    public function getFeeOnShipping(): bool
     {
         return $this->feeOnShipping;
     }
 
     /**
-     * Set competitor policy
+     * Set competitor policy.
+     *
      * @param int $policy Pricer::ALIGN | Pricer::NO_ALIGN
+     *
      * @return self
      */
-    public function setCompetitorPolicy(int $policy) : self
+    public function setCompetitorPolicy(int $policy): self
     {
         $this->competitorPolicy = $policy;
 
@@ -240,19 +274,21 @@ class Pricer
     }
 
     /**
-     * Get competitor policy
+     * Get competitor policy.
+     *
      * @return int
      */
-    public function getCompetitorPolicy() : int
+    public function getCompetitorPolicy(): int
     {
         return $this->competitorPolicy;
     }
 
     /**
-     * Set no competitor policy
-     * @param int $policy   Pricer::BASE_PRICE | Pricer::TARGET_BELOW_BASE_PRICE | Pricer::TARGET_PRICE
+     * Set no competitor policy.
+     *
+     * @param int $policy Pricer::BASE_PRICE | Pricer::TARGET_BELOW_BASE_PRICE | Pricer::TARGET_PRICE
      */
-    public function setNoCompetitorPolicy(int $policy) : self
+    public function setNoCompetitorPolicy(int $policy): self
     {
         $this->noCompetitorPolicy = $policy;
 
@@ -260,20 +296,23 @@ class Pricer
     }
 
     /**
-     * Get no competitor policy
+     * Get no competitor policy.
+     *
      * @return int
      */
-    public function getNoCompetitorPolicy() : int
+    public function getNoCompetitorPolicy(): int
     {
         return $this->noCompetitorPolicy;
     }
 
     /**
-     * Set desired selling markup
+     * Set desired selling markup.
+     *
      * @param int $targetMarkup Selling markup in percentage
+     *
      * @return self
      */
-    public function setTargetMarkup(float $targetMarkup = null) : self
+    public function setTargetMarkup(float $targetMarkup = null): self
     {
         $this->targetMarkup = $targetMarkup;
         $this->targetMarkupFactor = null;
@@ -285,33 +324,38 @@ class Pricer
     }
 
     /**
-     * Get desired selling markup
-     * @return int
+     * Get desired selling markup.
+     *
+     * @return float
      */
-    public function getTargetMarkup() : int
+    public function getTargetMarkup(): float
     {
         return $this->targetMarkup;
     }
 
     /**
-     * Get target factor used to compute target price from the purchase price
+     * Get target factor used to compute target price from the purchase price.
+     *
      * @return float
      */
-    protected function getTargetMarkupFactor() : float
+    protected function getTargetMarkupFactor(): float
     {
         return $this->targetMarkupFactor;
     }
 
     /**
-     * Set minimal selling markup if competitors
+     * Set minimal selling markup if competitors.
+     *
      * @param int $alignMarkup margin rate %
+     *
      * @return self
      */
-    public function setAlignMarkup(float $alignMarkup = null) : self
+    public function setAlignMarkup(float $alignMarkup = null): self
     {
         $this->alignMarkup = $alignMarkup;
         if (!isset($alignMarkup)) {
             $this->alignMarkupFactor = null;
+
             return $this;
         }
         $this->alignMarkupFactor = $this->getRateFactor($alignMarkup);
@@ -320,60 +364,68 @@ class Pricer
     }
 
     /**
-     * Get align markup, selling markup percentage
-     * @return int
+     * Get align markup, selling markup percentage.
+     *
+     * @return float
      */
-    public function getAlignMarkup() : int
+    public function getAlignMarkup(): float
     {
         return $this->alignMarkup;
     }
 
     /**
-     * Get minimal align factor used to compute minimal price from purchase price
+     * Get minimal align factor used to compute minimal price from purchase price.
+     *
      * @return float
      */
-    protected function getAlignMarkupFactor() : float
+    protected function getAlignMarkupFactor(): float
     {
         return $this->alignMarkupFactor;
     }
 
     /**
-     * Allowed drop rate on price for products without purchase price
+     * Allowed drop rate on price for products without purchase price.
+     *
      * @param float $rate
+     *
      * @return self
      */
-    public function setDropRate(float $rate) : self
+    public function setDropRate(float $rate): self
     {
         $this->dropRate = $rate;
-        $this->dropRateFactor = (100-$rate)/100;
+        $this->dropRateFactor = (100 - $rate) / 100;
 
         return $this;
     }
 
     /**
-     * Get allowed drop rate on price for products without purchase price
+     * Get allowed drop rate on price for products without purchase price.
+     *
      * @return int
      */
-    public function getDropRate() : float
+    public function getDropRate(): float
     {
         return $this->dropRate;
     }
 
     /**
-     * Allowed drop factor if no purchase price
+     * Allowed drop factor if no purchase price.
+     *
      * @return float
      */
-    protected function getDropFactor() : float
+    protected function getDropFactor(): float
     {
         return $this->dropRateFactor;
     }
 
     /**
-     * Get minimal selling price
+     * Get minimal selling price.
+     *
      * @param float $purchasePrice
+     *
      * @return float
      */
-    protected function getMinPrice(float $purchasePrice) : float
+    protected function getMinPrice(float $purchasePrice): float
     {
         if (!isset($this->alignMarkupFactor)) {
             return $this->getTargetPrice($purchasePrice);
@@ -386,11 +438,13 @@ class Pricer
     }
 
     /**
-     * Get target selling price
+     * Get target selling price.
+     *
      * @param float $purchasePrice
+     *
      * @return float
      */
-    protected function getTargetPrice(float $purchasePrice) : float
+    protected function getTargetPrice(float $purchasePrice): float
     {
         if (!isset($this->targetMarkupFactor)) {
             throw new \Exception('A target markup is required');
@@ -403,11 +457,13 @@ class Pricer
     }
 
     /**
-     * Set the real shipping cost paid by seller
+     * Set the real shipping cost paid by seller.
+     *
      * @param float $shippingCost
+     *
      * @return self
      */
-    public function setShippingCost(float $shippingCost) : self
+    public function setShippingCost(float $shippingCost): self
     {
         $this->shippingCost = $shippingCost;
 
@@ -415,20 +471,23 @@ class Pricer
     }
 
     /**
-     * Get the real shipping cost paid by seller
+     * Get the real shipping cost paid by seller.
+     *
      * @return float
      */
-    public function getShippingCost() : float
+    public function getShippingCost(): float
     {
         return $this->shippingCost;
     }
 
     /**
-     * Get computed shipping price
+     * Get computed shipping price.
+     *
      * @throws \Exception
-     * @param float $sellingPrice   A selling price with all fees included except shipping
+     *
+     * @param float $sellingPrice A selling price with all fees included except shipping
      */
-    protected function getShippingPrice(float $sellingPrice) : float
+    protected function getShippingPrice(float $sellingPrice): float
     {
         if (count($this->shippingScale) > 0 && 0 === (int) round(100 * $this->getShippingCost())) {
             throw new \Exception('Shipping cost is required with a shipping scale');
@@ -455,26 +514,29 @@ class Pricer
     }
 
     /**
-     * Can use competitor if competitor price - 0.01 >= min price
+     * Can use competitor if competitor price - 0.01 >= min price.
+     *
      * @param float $competitorPrice
      * @param float $minPrice
      *
      * @return bool
      */
-    protected function canUseCompetitor(float $competitorPrice, float $minPrice) : bool
+    protected function canUseCompetitor(float $competitorPrice, float $minPrice): bool
     {
         $estimatedCents = (int) round(100 * ($competitorPrice - $this->getCompetitorGap()));
 
-        return ($estimatedCents >= (int) round(100 * $minPrice));
+        return $estimatedCents >= (int) round(100 * $minPrice);
     }
 
     /**
-     * Get price with competitor
+     * Get price with competitor.
+     *
      * @param float $basePrice
      * @param float $competitorPrice
      * @param float $targetPrice
      * @param float $minPrice
      * @param float $purchasePrice
+     *
      * @return WinningPrice
      */
     protected function getPriceWithCompetitor(float $basePrice, float $competitorPrice, float $targetPrice = null, float $minPrice, float $purchasePrice = null)
@@ -487,11 +549,13 @@ class Pricer
             if (isset($targetPrice)) {
                 $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
             }
+
             return $price;
         }
 
         if (isset($targetPrice) && $competitorPrice > $targetPrice) {
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
+
             return $price;
         }
 
@@ -504,6 +568,7 @@ class Pricer
                 round($competitorPrice - $this->competitorGap, 2),
                 WinningPrice::COMPETITOR
             );
+
             return $price;
         }
 
@@ -516,12 +581,14 @@ class Pricer
     }
 
     /**
-     * Get price with no competitor
+     * Get price with no competitor.
+     *
      * @param float $basePrice
      * @param float $targetPrice
+     *
      * @return WinningPrice
      */
-    protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null) : WinningPrice
+    protected function getPriceWithNoCompetitor(float $basePrice, float $targetPrice = null): WinningPrice
     {
         $price = new WinningPrice();
         $price->value = $basePrice;
@@ -531,12 +598,12 @@ class Pricer
             return $price;
         }
 
-        if (Pricer::TARGET_BELOW_BASE_PRICE === $this->noCompetitorPolicy) {
+        if (self::TARGET_BELOW_BASE_PRICE === $this->noCompetitorPolicy) {
             // If the price remain higher than target price, normalize
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
         }
 
-        if (Pricer::TARGET_PRICE === $this->noCompetitorPolicy) {
+        if (self::TARGET_PRICE === $this->noCompetitorPolicy) {
             $price->type = WinningPrice::TARGET;
             $price->value = $targetPrice;
         }
@@ -544,17 +611,16 @@ class Pricer
         return $price;
     }
 
-
     /**
-     * Compute a winning price
+     * Compute a winning price.
      *
-     * @param float     $basePrice              base price, never modified by the pricer
-     * @param float     $purchasePrice          Can be null
-     * @param float     $competitorPrice        Can be null
+     * @param float $basePrice       base price, never modified by the pricer
+     * @param float $purchasePrice   Can be null
+     * @param float $competitorPrice Can be null
      *
      * @return WinningPrice
      */
-    public function getWinningPrice(float $basePrice, float $purchasePrice = null, float $competitorPrice = null) : WinningPrice
+    public function getWinningPrice(float $basePrice, float $purchasePrice = null, float $competitorPrice = null): WinningPrice
     {
         $targetPrice = null;
         $minPrice = $basePrice * $this->dropRateFactor;

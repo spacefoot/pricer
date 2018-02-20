@@ -1,4 +1,5 @@
 <?php
+
 namespace Pricer;
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +11,7 @@ class PricerTest extends TestCase
         $this->assertEquals($expected, $current->value, 'Price type = '.$current->type, 0.01);
     }
 
-    protected function getNoshippingPricer() : Pricer
+    protected function getNoshippingPricer(): Pricer
     {
         $pricer = new Pricer();
 
@@ -22,7 +23,7 @@ class PricerTest extends TestCase
         return $pricer;
     }
 
-    protected function getFeesPricer() : Pricer
+    protected function getFeesPricer(): Pricer
     {
         $pricer = new Pricer();
 
@@ -32,7 +33,7 @@ class PricerTest extends TestCase
                 [
                     [20,    5.99],
                     [70,    2.99],
-                    [null,  0]
+                    [null,  0],
                 ]
             )
             ->setFeeOnShipping(true)
@@ -42,7 +43,6 @@ class PricerTest extends TestCase
 
         return $pricer;
     }
-
 
     public function testNoChange()
     {
@@ -58,7 +58,7 @@ class PricerTest extends TestCase
     }
 
     /**
-     * No fees, No shipping cost
+     * No fees, No shipping cost.
      */
     public function testPurchasePriceNoCompetitor()
     {
@@ -121,7 +121,6 @@ class PricerTest extends TestCase
         $this->assertPrice(13.89, $price);
     }
 
-
     public function testShippingCostNoFees()
     {
         // coeff taux de marque cible = 1.428571429
@@ -137,7 +136,6 @@ class PricerTest extends TestCase
         $this->assertPrice(33.70, $price);
     }
 
-
     public function testNoSellingPriceNoCompetitor()
     {
         $pricer = $this->getFeesPricer();
@@ -145,7 +143,6 @@ class PricerTest extends TestCase
         $this->assertEquals(WinningPrice::BASE, $price->type);
         $this->assertPrice(35.00, $price);
     }
-
 
     public function testCompetitorGap()
     {
@@ -157,9 +154,8 @@ class PricerTest extends TestCase
         $this->assertPrice(34.97, $price);
     }
 
-
     /**
-     * < 10%
+     * < 10%.
      */
     public function testNoSellingPriceCompetitorAllowed()
     {
@@ -171,7 +167,7 @@ class PricerTest extends TestCase
     }
 
     /**
-     * > 10%
+     * > 10%.
      */
     public function testNoSellingPriceCompetitorNotAllowed()
     {
@@ -183,7 +179,7 @@ class PricerTest extends TestCase
     }
 
     /**
-     * = 10%
+     * = 10%.
      */
     public function testNoSellingPriceCompetitorLess10Percent()
     {
@@ -193,8 +189,6 @@ class PricerTest extends TestCase
         $this->assertEquals(WinningPrice::COMPETITOR, $price->type);
         $this->assertPrice(31.50, $price);
     }
-
-
 
     public function testAlignDisabled()
     {
@@ -213,7 +207,7 @@ class PricerTest extends TestCase
 
     /**
      * base price higher than target markup price, with decrease to target disabled
-     * Price is not modified
+     * Price is not modified.
      */
     public function testDecreaseToTargetDisabled()
     {
@@ -224,10 +218,9 @@ class PricerTest extends TestCase
         $this->assertEquals(WinningPrice::BASE, $price->type);
     }
 
-
     /**
      * Force a markup
-     * Price is modified according to purchase price
+     * Price is modified according to purchase price.
      */
     public function testForceMarkupOnPurchasePrice()
     {
@@ -239,9 +232,8 @@ class PricerTest extends TestCase
         $this->assertEquals(WinningPrice::TARGET, $price->type);
     }
 
-
     /**
-     * Force a markup, disable alignement
+     * Force a markup, disable alignement.
      */
     public function testForceMarkupWithCompetitor()
     {
@@ -254,10 +246,9 @@ class PricerTest extends TestCase
         $this->assertEquals(WinningPrice::TARGET, $price->type);
     }
 
-
     /**
      * Force a markup
-     * Price is not modified if no purchase price
+     * Price is not modified if no purchase price.
      */
     public function testForceMarkupWithNoPurchasePrice()
     {
@@ -268,7 +259,6 @@ class PricerTest extends TestCase
         $this->assertPrice(35.00, $price);
         $this->assertEquals(WinningPrice::BASE, $price->type);
     }
-
 
     public function testForceMarkupWithFees()
     {
@@ -287,7 +277,6 @@ class PricerTest extends TestCase
         // 9.150235292 + 1,057058823
         // 10,207294115
     }
-
 
     public function testPurchasePriceGreaterThanBasePrice()
     {
@@ -330,7 +319,7 @@ class PricerTest extends TestCase
     }
 
     /**
-     * Test case when a output price higher than base price is allowed
+     * Test case when a output price higher than base price is allowed.
      */
     public function testIncreasePriceWithTargetMarkup()
     {
@@ -342,9 +331,6 @@ class PricerTest extends TestCase
         $this->assertGreaterThan(24.00, $price->value);
     }
 
-    /**
-     *
-     */
     public function testNoTargetMarkup()
     {
         $pricer = $this->getFeesPricer()->setTargetMarkup(null);
@@ -352,7 +338,6 @@ class PricerTest extends TestCase
         $this->expectException(\Exception::class);
         $pricer->getWinningPrice(24.00, 20.00);
     }
-
 
     public function testFloatTargetMarkup()
     {
@@ -388,7 +373,6 @@ class PricerTest extends TestCase
 
         $this->assertGreaterThan($p1->value, $p2->value);
     }
-
 
     public function testFloatFeeRate()
     {
