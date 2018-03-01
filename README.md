@@ -114,6 +114,8 @@ $pricer->setDropRate(10);
 |      10.00 |              9.00 |          9.00 |
 |      10.00 |              8.91 |          9.00 |
 
+Drop rate is used only when a competitor exists.
+
 
 ### Alignment to a competitor
 
@@ -126,6 +128,9 @@ $pricer->setCompetitorGap(0.03);
 ### Competitor policies
 
 #### If there is a competitor
+
+When there is a competitor, the target markup apply if the target price is lower than the competitor. The competitor price will be used only if bellow target price but alignment will be limited by the align markup.
+
 
 Disable competitor aligment:
 
