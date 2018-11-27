@@ -146,7 +146,7 @@ If the competitor alignment is enabled, the pricer will apply a price drop to al
 * there is no purchase price, and the price drop rate is greater than zero.
 * there is a purchase price, if the align rate is not set, the pricer throw an exception.
 
-`Pricer::NO_ALIGN`: Do not drop price if the competitor have a lower price
+`Pricer::NO_ALIGN`: Do not drop price if the competitor have a lower price, competitor value will be ignored but if the target markup is set the price will be lowered accordingly.
 
 
 #### If there is no competitor
@@ -159,7 +159,7 @@ $pricer->setNoCompetitorPolicy(Pricer::BASE_PRICE);
 
 Possibles values for this method are:
 
-* `Pricer::BASE_PRICE`: Output the base price.
+* `Pricer::BASE_PRICE`: Output the base price if there is no competitor.
 * `Pricer::TARGET_BELOW_BASE_PRICE`: Use the target markup to drop base price up to the target markup. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
 * `Pricer::TARGET_PRICE`: Use the target markup to change the base price according to the target markup. 
 
