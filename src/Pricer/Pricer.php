@@ -160,7 +160,7 @@ class Pricer
     public function setFeeRate(float $fee): self
     {
         $this->feeRate = $fee;
-        $this->feeFactor = $this->getRateFactor($fee);
+        $this->feeFactor = 1 + $fee / 100;
 
         return $this;
     }
