@@ -387,4 +387,77 @@ class PricerTest extends TestCase
 
         $this->assertGreaterThan($p1->value, $p2->value);
     }
+
+
+    public function testMarkupWithFreePort()
+    {
+        $pricer = new Pricer();
+        $pricer->setFeeRate(15)
+        ->setShippingCost(5.99)
+        ->setShippingScale(
+            [
+                [20,    5.99],
+                [70,    2.99],
+                [null,  0],
+            ]
+        )
+        ->setFeeOnShipping(true)
+        ->setTargetMarkup(17);
+
+        $pricerPrice = $pricer->getWinningPrice(139, 58.8);
+        $this->assertPrice(90.39, $pricerPrice);
+
+        $ourSalePrice = $pricerPrice->value * 0.85;
+        $salePriceWithoutShippingCost = $ourSalePrice - 5.99;
+        $markup = 100 * (($salePriceWithoutShippingCost - 58.8) / $salePriceWithoutShippingCost);
+        $this->assertEquals(17, $markup, 'Markup with free port', 0.1);
+    }
+
+    public function testMarkupWithPort()
+    {
+        $pricer = new Pricer();
+        $pricer->setFeeRate(15)
+        ->setShippingCost(5.99)
+        ->setShippingScale(
+            [
+                [20,    5.99],
+                [70,    2.99],
+                [null,  0],
+            ]
+        )
+        ->setFeeOnShipping(true)
+        ->setTargetMarkup(17);
+
+        $pricerPrice = $pricer->getWinningPrice(139, 8.8);
+        $this->assertPrice(13.53, $pricerPrice);
+
+        $ourSalePrice = ($pricerPrice->value + 5.99) * 0.85;
+        $salePriceWithoutShippingCost = $ourSalePrice - 5.99;
+        $markup = 100 * (($salePriceWithoutShippingCost - 8.8) / $salePriceWithoutShippingCost);
+        $this->assertEquals(17, $markup, 'Markup with 5.99 port', 0.1);
+    }
+
+    public function testMarkupWithHalfPort()
+    {
+        $pricer = new Pricer();
+        $pricer->setFeeRate(15)
+        ->setShippingCost(5.99)
+        ->setShippingScale(
+            [
+                [20,    5.99],
+                [70,    2.99],
+                [null,  0],
+            ]
+        )
+        ->setFeeOnShipping(true)
+        ->setTargetMarkup(17);
+
+        $pricerPrice = $pricer->getWinningPrice(139, 18.8);
+        $this->assertPrice(30.70, $pricerPrice);
+
+        $ourSalePrice = ($pricerPrice->value + 2.99) * 0.85;
+        $salePriceWithoutShippingCost = $ourSalePrice - 5.99;
+        $markup = 100 * (($salePriceWithoutShippingCost - 18.8) / $salePriceWithoutShippingCost);
+        $this->assertEquals(17, $markup, 'Markup with 2.99 port', 0.1);
+    }
 }
