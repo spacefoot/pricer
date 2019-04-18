@@ -387,4 +387,32 @@ class PricerTest extends TestCase
 
         $this->assertGreaterThan($p1->value, $p2->value);
     }
+
+    public function testNegativeTargetMarkup()
+    {
+        $pricer = new Pricer();
+        $pricer->setTargetMarkup(-100);
+
+        $basePrice = 20;
+        $purchasePrice = 10;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+
+        $this->assertEquals($winningPrice->value, 5);
+    }
+
+    public function testNegativeAlignMarkup()
+    {
+        $pricer = new Pricer();
+        $pricer->setTargetMarkup(-100);
+        $pricer->setAlignMarkup(-200);
+
+        $basePrice = 20;
+        $purchasePrice = 10;
+        $competitorPrice = 2;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+
+        $this->assertEquals($winningPrice->value, 3.33);
+    }
 }
