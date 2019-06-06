@@ -27,7 +27,7 @@ composer install spacefoot/pricer --save
 
 ## General purpose
 
-This software library is designed to compute a better price on products using defined markups and competitors price on the same product. 
+This software library is designed to compute a better price on products using defined markups and competitors price on the same product.
 
 Example with default options:
 
@@ -161,7 +161,7 @@ Possibles values for this method are:
 
 * `Pricer::BASE_PRICE`: Output the base price if there is no competitor.
 * `Pricer::TARGET_BELOW_BASE_PRICE`: Use the target markup to drop base price up to the target markup. The pricer will never output a price higher than the current price to ensure that special discounts are retained as is.
-* `Pricer::TARGET_PRICE`: Use the target markup to change the base price according to the target markup. 
+* `Pricer::TARGET_PRICE`: Use the target markup to change the base price according to the target markup.
 
 Default value is `Pricer::TARGET_BELOW_BASE_PRICE`
 
@@ -176,7 +176,7 @@ If target markup is not defined with `setTargetMarkup`, the pricer will output t
 ### Set the shipping cost base (real cost of your shipping)
 
 The shipping cost is the real cost of the shipping.
-The computed shipping price can be different than the shipping cost. 
+The computed shipping price can be different than the shipping cost.
 
 ```php
 $pricer->setShippingCost(5.99);
@@ -221,3 +221,15 @@ To disable fees on shipping cost, the setShippingFee method can be used:
 ```php
 $pricer->setFeeOnShipping(false);
 ```
+
+
+## Raise base price when below a minimum markup (NEW)
+
+Set those options to raise the base price when it's below the minimum markup.
+
+```php
+$pricer->setMinMarkup(10);
+$pricer->setRaiseBasePriceIfBelowMinMarkup(true);
+```
+
+_Note: the min markup must be set to enable this behavior. Else an exception will be throwed._

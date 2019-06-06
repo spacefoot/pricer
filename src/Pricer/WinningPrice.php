@@ -8,6 +8,7 @@ namespace Pricer;
 class WinningPrice
 {
     const BASE = 'Unmodified base price';
+    const BASE_RAISED = 'Base price raised';
     const COMPETITOR = 'Aligned to competitor';
     const MIN = 'Limited by align markup';
     const TARGET = 'Limited by target markup';

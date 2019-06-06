@@ -89,6 +89,27 @@ class Pricer
     protected $alignMarkupFactor = null;
 
     /**
+     * Minimum markup percentage, can be null.
+     *
+     * @var float
+     */
+    protected $minMarkup = null;
+
+    /**
+     * factor to obtain the minimal selling price from purchase price
+     *
+     * @var float
+     */
+    protected $minMarkupFactor = null;
+
+    /**
+     * Raise base price if below align markup
+     *
+     * @var bool
+     */
+    protected $raiseBasePriceIfBelowMinMarkup = false;
+
+    /**
      * target selling markup percentage.
      *
      * @var float
@@ -364,6 +385,40 @@ class Pricer
     }
 
     /**
+     * Set minimum markup
+     *
+     * @param float $minMarkup margin rate %
+     *
+     * @return self
+     */
+    public function setMinMarkup(float $minMarkup = null): self
+    {
+        $this->minMarkup = $minMarkup;
+        if (!isset($minMarkup)) {
+            $this->minMarkupFactor = null;
+
+            return $this;
+        }
+        $this->minMarkupFactor = $this->getRateFactor($minMarkup);
+
+        return $this;
+    }
+
+    /**
+     * Set mode to raise base price when below min markup
+     *
+     * @param bool raiseBasePriceIfBelowMinMarkup
+     *
+     * @return self
+     */
+    public function setRaiseBasePriceIfBelowMinMarkup(bool $raiseBasePriceIfBelowMinMarkup): self
+    {
+        $this->raiseBasePriceIfBelowMinMarkup = $raiseBasePriceIfBelowMinMarkup;
+
+        return $this;
+    }
+
+    /**
      * Get align markup, selling markup percentage.
      *
      * @return float
@@ -371,6 +426,27 @@ class Pricer
     public function getAlignMarkup(): float
     {
         return $this->alignMarkup;
+    }
+
+    /**
+     * Get min markup.
+     *
+     * @return float
+     */
+    public function getMinMarkup(): float
+    {
+        return $this->minMarkup;
+    }
+
+
+    /**
+     * Return true if base price should be raised when below min markup
+     *
+     * @return bool
+     */
+    public function getRaiseBasePriceIfBelowMinMarkup(): bool
+    {
+        return $this->raiseBasePriceIfBelowMinMarkup;
     }
 
     /**
@@ -631,9 +707,23 @@ class Pricer
         }
 
         if (isset($competitorPrice)) {
-            return $this->getPriceWithCompetitor($basePrice, $competitorPrice, $targetPrice, $minPrice, $purchasePrice);
+            $winningPrice = $this->getPriceWithCompetitor($basePrice, $competitorPrice, $targetPrice, $minPrice, $purchasePrice);
+        } else {
+            $winningPrice = $this->getPriceWithNoCompetitor($basePrice, $targetPrice);
         }
 
-        return $this->getPriceWithNoCompetitor($basePrice, $targetPrice);
+        if ($winningPrice->type === WinningPrice::BASE && $this->raiseBasePriceIfBelowMinMarkup && $purchasePrice !== null) {
+            if (!isset($this->minMarkupFactor)) {
+                throw new \Exception('A min markup is required');
+            }
+
+            $raisedBasePrice = $purchasePrice * $this->minMarkupFactor;
+            if ($raisedBasePrice > $basePrice) {
+                $winningPrice->value = $raisedBasePrice;
+                $winningPrice->type = WinningPrice::BASE_RAISED;
+            }
+        }
+
+        return $winningPrice;
     }
 }

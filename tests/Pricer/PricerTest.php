@@ -415,4 +415,29 @@ class PricerTest extends TestCase
 
         $this->assertEquals($winningPrice->value, 3.33);
     }
+
+    public function testBasePriceBelowMinMarkup()
+    {
+        $pricer = new Pricer();
+        $pricer->setAlignMarkup(25);
+        $pricer->setTargetMarkup(30);
+        $pricer->setNoCompetitorPolicy(Pricer::BASE_PRICE);
+
+        $basePrice = 9;
+        $purchasePrice = 9;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 9);
+
+        $pricer->setMinMarkup(10);
+        $pricer->setRaiseBasePriceIfBelowMinMarkup(true);
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 10);
+        $this->assertEquals(WinningPrice::BASE_RAISED, $winningPrice->type);
+
+        $purchasePrice = 5;
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 9);
+        $this->assertEquals(WinningPrice::BASE, $winningPrice->type);
+    }
 }
