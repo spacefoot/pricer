@@ -413,6 +413,10 @@ class Pricer
      */
     public function setRaiseBasePriceIfBelowMinMarkup(bool $raiseBasePriceIfBelowMinMarkup): self
     {
+        if ($raiseBasePriceIfBelowMinMarkup && !isset($this->minMarkupFactor)) {
+            throw new \Exception('A min markup is required');
+        }
+
         $this->raiseBasePriceIfBelowMinMarkup = $raiseBasePriceIfBelowMinMarkup;
 
         return $this;
@@ -713,10 +717,6 @@ class Pricer
         }
 
         if ($winningPrice->type === WinningPrice::BASE && $this->raiseBasePriceIfBelowMinMarkup && $purchasePrice !== null) {
-            if (!isset($this->minMarkupFactor)) {
-                throw new \Exception('A min markup is required');
-            }
-
             $raisedBasePrice = $purchasePrice * $this->minMarkupFactor;
             if ($raisedBasePrice > $basePrice) {
                 $winningPrice->value = $raisedBasePrice;
