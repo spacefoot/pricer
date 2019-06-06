@@ -716,12 +716,13 @@ class Pricer
             $winningPrice = $this->getPriceWithNoCompetitor($basePrice, $targetPrice);
         }
 
-        if ($winningPrice->type === WinningPrice::BASE && $this->raiseBasePriceIfBelowMinMarkup && $purchasePrice !== null) {
-            $raisedBasePrice = $purchasePrice * $this->minMarkupFactor;
-            if ($raisedBasePrice > $basePrice) {
-                $winningPrice->value = $raisedBasePrice;
-                $winningPrice->type = WinningPrice::BASE_RAISED;
-            }
+        if ($winningPrice->type === WinningPrice::BASE
+            && $this->raiseBasePriceIfBelowMinMarkup
+            && $purchasePrice !== null
+            && ($raisedBasePrice = $purchasePrice * $this->minMarkupFactor) > $basePrice) {
+
+            $winningPrice->value = $raisedBasePrice;
+            $winningPrice->type = WinningPrice::BASE_RAISED;
         }
 
         return $winningPrice;
