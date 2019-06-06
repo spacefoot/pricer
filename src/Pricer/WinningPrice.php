@@ -48,6 +48,26 @@ class WinningPrice
         return true;
     }
 
+    /**
+     * Set the selling price only if the new value is greater than current value.
+     *
+     * @param float $price
+     * @param WinningPrice::BASE | WinningPrice::COMPETITOR | WinningPrice::MIN | WinningPrice::TARGET
+     *
+     * @return bool
+     */
+    public function setSellingPriceUp(float $price, string $type): bool
+    {
+        if ($this->value > $price) {
+            return false;
+        }
+
+        $this->value = $price;
+        $this->type = $type;
+
+        return true;
+    }
+
     public function getCents(): int
     {
         return (int) round(100 * $this->value);

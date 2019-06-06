@@ -413,10 +413,6 @@ class Pricer
      */
     public function setRaiseBasePriceIfBelowMinMarkup(bool $raiseBasePriceIfBelowMinMarkup): self
     {
-        if ($raiseBasePriceIfBelowMinMarkup && !isset($this->minMarkupFactor)) {
-            throw new \Exception('A min markup is required');
-        }
-
         $this->raiseBasePriceIfBelowMinMarkup = $raiseBasePriceIfBelowMinMarkup;
 
         return $this;
@@ -534,6 +530,25 @@ class Pricer
         $targetPrice += $this->getShippingPrice($targetPrice);
 
         return round($targetPrice, 2);
+    }
+
+    /**
+     * Get target selling price.
+     *
+     * @param float $purchasePrice
+     *
+     * @return float
+     */
+    protected function getRaisedBasePrice(float $purchasePrice): float
+    {
+        if (!isset($this->minMarkupFactor)) {
+            throw new \Exception('A min markup is required');
+        }
+
+        $raisedBasePrice = $purchasePrice * $this->minMarkupFactor * $this->feeFactor;
+        $raisedBasePrice += $this->getShippingPrice($raisedBasePrice);
+
+        return round($raisedBasePrice, 2);
     }
 
     /**
@@ -719,11 +734,10 @@ class Pricer
         // Raise base price if below min markup (optional)
         if ($winningPrice->type === WinningPrice::BASE
             && $this->raiseBasePriceIfBelowMinMarkup
-            && $purchasePrice !== null
-            && ($raisedBasePrice = $purchasePrice * $this->minMarkupFactor) > $basePrice) {
+            && $purchasePrice !== null) {
 
-            $winningPrice->value = $raisedBasePrice;
-            $winningPrice->type = WinningPrice::BASE_RAISED;
+            $raisedBasePrice = $this->getRaisedBasePrice($purchasePrice);
+            $winningPrice->setSellingPriceUp($raisedBasePrice, WinningPrice::BASE_RAISED);
         }
 
         return $winningPrice;
