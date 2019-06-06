@@ -716,6 +716,7 @@ class Pricer
             $winningPrice = $this->getPriceWithNoCompetitor($basePrice, $targetPrice);
         }
 
+        // Raise base price if below min markup (optional)
         if ($winningPrice->type === WinningPrice::BASE
             && $this->raiseBasePriceIfBelowMinMarkup
             && $purchasePrice !== null
