@@ -455,5 +455,30 @@ class PricerTest extends TestCase
         $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
         $this->assertEquals($winningPrice->value, 183.22);
         $this->assertEquals(WinningPrice::BASE_RAISED, $winningPrice->type);
+
+        $pricer->setShippingScale(
+            [
+                [50,    5.99],
+                [75,    4.99],
+                [null,  0],
+            ]
+        );
+        $basePrice = 45.50;
+        $purchasePrice = 43.19;
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 58.59);
+        $this->assertEquals(WinningPrice::BASE_RAISED, $winningPrice->type);
+
+        $basePrice = 12;
+        $purchasePrice = 11.36;
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 15.15);
+        $this->assertEquals(WinningPrice::BASE_RAISED, $winningPrice->type);
+
+        $basePrice = 15.15;
+        $purchasePrice = 11.36;
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice);
+        $this->assertEquals($winningPrice->value, 15.15);
+        $this->assertEquals(WinningPrice::BASE, $winningPrice->type);
     }
 }

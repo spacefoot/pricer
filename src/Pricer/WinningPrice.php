@@ -58,7 +58,7 @@ class WinningPrice
      */
     public function setSellingPriceUp(float $price, string $type): bool
     {
-        if ($this->value > $price) {
+        if ($this->value >= $price) {
             return false;
         }
 
