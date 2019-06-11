@@ -8,6 +8,7 @@ namespace Pricer;
 class WinningPrice
 {
     const BASE = 'Unmodified base price';
+    const BASE_RAISED = 'Base price raised';
     const COMPETITOR = 'Aligned to competitor';
     const MIN = 'Limited by align markup';
     const TARGET = 'Limited by target markup';
@@ -38,6 +39,26 @@ class WinningPrice
     public function setSellingPriceDown(float $price, string $type): bool
     {
         if ($this->value < $price) {
+            return false;
+        }
+
+        $this->value = $price;
+        $this->type = $type;
+
+        return true;
+    }
+
+    /**
+     * Set the selling price only if the new value is greater than current value.
+     *
+     * @param float $price
+     * @param WinningPrice::BASE | WinningPrice::COMPETITOR | WinningPrice::MIN | WinningPrice::TARGET
+     *
+     * @return bool
+     */
+    public function setSellingPriceUp(float $price, string $type): bool
+    {
+        if ($this->value >= $price) {
             return false;
         }
 
