@@ -75,7 +75,7 @@ class PricerTest extends TestCase
     public function testPurchasePriceNoCompetitorFees()
     {
         $price = $this->getFeesPricer()->getWinningPrice(19.35, 8.00);
-        $this->assertPrice(14.50, $price);
+        $this->assertPrice(14.04, $price);
     }
 
     public function testHighPurchasePriceNoCompetitorFees()
@@ -109,7 +109,7 @@ class PricerTest extends TestCase
 
         $price = $pricer->getWinningPrice(19.35, 8.00, 10.90);
         $this->assertEquals(WinningPrice::MIN, $price->type);
-        $this->assertPrice(12.53, $price);
+        $this->assertPrice(12.12, $price);
     }
 
     public function testShippingCompetitorHigherThanMin()
@@ -124,7 +124,7 @@ class PricerTest extends TestCase
     public function testShippingCostNoFees()
     {
         // coeff taux de marque cible = 1.428571429
-        // coeff fees = 1.176470588
+        // coeff fees = 1.15
         // pour un montant entre 20 et 70
         // shipping = 3.4485
         // 18*1.428571429*1.176470588 + 3.4485
@@ -133,7 +133,7 @@ class PricerTest extends TestCase
         $pricer->setFeeOnShipping(false);
         $price = $pricer->getWinningPrice(35.00, 18.00);
         $this->assertEquals(WinningPrice::TARGET, $price->type);
-        $this->assertPrice(33.70, $price);
+        $this->assertPrice(32.96, $price);
     }
 
     public function testNoSellingPriceNoCompetitor()
@@ -266,12 +266,12 @@ class PricerTest extends TestCase
             ->setTargetMarkup(10);
         $price = $pricer->getWinningPrice(11.00, 7.00);
 
-        $this->assertPrice(10.21, $price);
+        $this->assertPrice(9.84, $price);
         $this->assertEquals(WinningPrice::TARGET, $price->type);
 
         // markup factor: 1,111111111
         // 7,77777
-        // fee factor: 1,176470588
+        // fee factor: 1,15
         // 9.150235292
         // shipping 0.8985 * 1.176470588
         // 9.150235292 + 1,057058823
