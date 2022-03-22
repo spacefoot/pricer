@@ -481,4 +481,54 @@ class PricerTest extends TestCase
         $this->assertEquals($winningPrice->value, 15.15);
         $this->assertEquals(WinningPrice::BASE, $winningPrice->type);
     }
+
+
+    public function testCompetitorPolicyAlignAlways()
+    {
+        $pricer = new Pricer();
+        $pricer
+            ->setTargetMarkup(30)
+            ->setAlignMarkup(18)
+            ->setDropRate(10);
+
+        $basePrice = 50;
+        $purchasePrice = 7;
+        $competitorPrice = 40;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $this->assertPrice(10, $winningPrice);
+        $this->assertEquals($winningPrice->type, WinningPrice::TARGET);
+
+        $pricer->setCompetitorPolicy(Pricer::ALIGN);
+
+        $basePrice = 19.35;
+        $purchasePrice = 8.00;
+        $competitorPrice = 12.90;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $this->assertPrice(11.43, $winningPrice);
+        $this->assertEquals($winningPrice->type, WinningPrice::TARGET);
+
+        $pricer->setCompetitorPolicy(Pricer::ALIGN_ALWAYS);
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $this->assertPrice(12.89, $winningPrice);
+        $this->assertEquals($winningPrice->type, WinningPrice::COMPETITOR_ALWAYS);
+
+        $basePrice = 50;
+        $purchasePrice = 7;
+        $competitorPrice = 40;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $this->assertPrice(39.99, $winningPrice);
+        $this->assertEquals($winningPrice->type, WinningPrice::COMPETITOR_ALWAYS);
+
+        $basePrice = 20;
+        $purchasePrice = 7;
+        $competitorPrice = 9;
+
+        $winningPrice = $pricer->getWinningPrice($basePrice, $purchasePrice, $competitorPrice);
+        $this->assertPrice(8.99, $winningPrice);
+        $this->assertEquals($winningPrice->type, WinningPrice::COMPETITOR);
+    }
 }
