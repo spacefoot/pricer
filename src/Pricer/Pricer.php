@@ -15,11 +15,18 @@ class Pricer
     const NO_ALIGN = 0;
 
     /**
-     * competitor policy, align to competito price.
+     * competitor policy, align to competitor price.
      *
      * @var int
      */
     const ALIGN = 1;
+
+    /**
+     * competitor policy, always align to competitor price, even if target price if below.
+     *
+     * @var int
+     */
+    const ALIGN_ALWAYS = 2;
 
     /**
      * No competitor policy, return base price.
@@ -648,7 +655,7 @@ class Pricer
             return $price;
         }
 
-        if (isset($targetPrice) && $competitorPrice > $targetPrice) {
+        if (self::ALIGN === $this->competitorPolicy && isset($targetPrice) && $competitorPrice > $targetPrice) {
             $price->setSellingPriceDown($targetPrice, WinningPrice::TARGET);
 
             return $price;
@@ -661,7 +668,7 @@ class Pricer
         if ($this->canUseCompetitor($competitorPrice, $minPrice)) {
             $price->setSellingPriceDown(
                 round($competitorPrice - $this->competitorGap, 2),
-                WinningPrice::COMPETITOR
+                self::ALIGN_ALWAYS === $this->competitorPolicy && $competitorPrice > $targetPrice ? WinningPrice::COMPETITOR_ALWAYS : WinningPrice::COMPETITOR
             );
 
             return $price;

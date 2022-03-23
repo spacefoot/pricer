@@ -10,6 +10,7 @@ class WinningPrice
     const BASE = 'Unmodified base price';
     const BASE_RAISED = 'Base price raised';
     const COMPETITOR = 'Aligned to competitor';
+    const COMPETITOR_ALWAYS = 'Aligned to competitor above target markup';
     const MIN = 'Limited by align markup';
     const TARGET = 'Limited by target markup';
     const MIN_RATED = 'Max price drop from base price';

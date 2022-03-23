@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  cli:
+    container_name: pricer
+    build:
+      context: .
+    volumes:
+      - .:/app
+    working_dir: /app

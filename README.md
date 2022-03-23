@@ -63,13 +63,14 @@ Pricer output to use as a discounted price
 
 Contain one of the following possible type
 
-| Constant                 | type value                     |
-|--------------------------|--------------------------------|
-| WinningPrice::BASE       | Unmodified base price          |
-| WinningPrice::COMPETITOR | Aligned to competitor          |
-| WinningPrice::MIN        | Limited by align markup        |
-| WinningPrice::TARGET     | Limited by target markup       |
-| WinningPrice::MIN_RATED  | Max price drop from base price |
+| Constant                        | type value                                |
+|---------------------------------|-------------------------------------------|
+| WinningPrice::BASE              | Unmodified base price                     |
+| WinningPrice::COMPETITOR        | Aligned to competitor                     |
+| WinningPrice::COMPETITOR_ALWAYS | Aligned to competitor above target markup |
+| WinningPrice::MIN               | Limited by align markup                   |
+| WinningPrice::TARGET            | Limited by target markup                  |
+| WinningPrice::MIN_RATED         | Max price drop from base price            |
 
 
 ## price calculation
@@ -145,6 +146,8 @@ If the competitor alignment is enabled, the pricer will apply a price drop to al
 
 * there is no purchase price, and the price drop rate is greater than zero.
 * there is a purchase price, if the align rate is not set, the pricer throw an exception.
+
+`Pricer::ALIGN_ALWAYS`: Same behavior but raise target price if below competitor price
 
 `Pricer::NO_ALIGN`: Do not drop price if the competitor have a lower price, competitor value will be ignored but if the target markup is set the price will be lowered accordingly.
 
